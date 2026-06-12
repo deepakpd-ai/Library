@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e; --paper: #f7f4ef; --cream: #ede8df;
+    --gold: #b5873a; --muted: #6b6459; --divider: #d4cfc6; --spine-red: #8b1a1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; }
+
+  header { background: var(--ink); padding: 48px 40px 36px; position: relative; overflow: hidden; }
+  header::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(180deg,var(--gold) 0%,var(--spine-red) 100%); }
+  .header-eyebrow { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:10px; }
+  header h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:700; color:#fff; line-height:1.1; }
+  header p { color:#a09890; font-size:14px; margin-top:12px; font-weight:300; }
+  .book-count-badge { display:inline-block; background:var(--gold); color:var(--ink); font-size:12px; font-weight:600; padding:3px 10px; border-radius:2px; letter-spacing:.04em; margin-top:16px; }
+
+  .controls { padding:20px 40px; background:var(--cream); border-bottom:1px solid var(--divider); display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .search-wrap { position:relative; flex:1; min-width:220px; }
+  .search-wrap input { width:100%; padding:9px 14px 9px 36px; border:1px solid var(--divider); background:var(--paper); font-family:'Inter',sans-serif; font-size:14px; color:var(--ink); outline:none; border-radius:2px; transition:border-color .2s; }
+  .search-wrap input:focus { border-color:var(--gold); }
+  .search-wrap svg.search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:16px; height:16px; stroke:var(--muted); fill:none; }
+  .filter-btns { display:flex; gap:6px; flex-wrap:wrap; }
+  .filter-btn { padding:7px 14px; border:1px solid var(--divider); background:var(--paper); font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--muted); cursor:pointer; border-radius:2px; letter-spacing:.03em; transition:all .15s; }
+  .filter-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .filter-btn.active { background:var(--ink); border-color:var(--ink); color:var(--gold); }
+
+  main { padding:32px 40px 60px; }
+  .section-label { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:20px; padding-bottom:8px; border-bottom:1px solid var(--divider); display:flex; justify-content:space-between; align-items:center; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1px; background:var(--divider); border:1px solid var(--divider); }
+
+  .card { background:var(--paper); padding:16px 18px; display:flex; gap:16px; transition:background .15s; align-items:flex-start; }
+  .card:hover { background:#fff; }
+  .card.hidden { display:none; }
+
+  .cover-wrap {
+    flex-shrink:0; width:76px; height:108px; border-radius:3px; overflow:hidden;
+    box-shadow: 3px 4px 10px rgba(0,0,0,0.28), inset -2px 0 5px rgba(0,0,0,0.12);
+  }
+  .cover-wrap svg { width:76px; height:108px; display:block; }
+
+  .card-body { flex:1; min-width:0; padding-top:2px; }
+  .card-title { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1.35; color:var(--ink); margin-bottom:3px; }
+  .card-author { font-size:12px; color:var(--muted); margin-bottom:10px; }
+  .card-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .tag { font-size:10px; letter-spacing:.05em; font-weight:600; padding:2px 7px; border-radius:2px; text-transform:uppercase; }
+  .cat-leadership{background:#eaf0fb;color:#2255aa} .cat-strategy{background:#fef3e2;color:#9a5e00}
+  .cat-innovation{background:#e8f8f2;color:#1a7a4e} .cat-biography{background:#f8eaf8;color:#7a2a7a}
+  .cat-finance{background:#fff0e6;color:#b54a00} .cat-motivation{background:#f0f8ff;color:#1a5580}
+  .cat-science{background:#f2fce4;color:#3a6b00} .cat-operations{background:#fff5f5;color:#b52020}
+  .cat-hr{background:#f5f0ff;color:#5a2aa0} .cat-other{background:#f4f4f4;color:#555}
+  .shelf-tag { font-size:10px; color:#bbb; }
+  .no-results { grid-column:1/-1; padding:48px; text-align:center; color:var(--muted); font-style:italic; display:none; }
+
+  .legend { display:flex; flex-wrap:wrap; gap:10px; margin:24px 0 0; padding-top:16px; border-top:1px solid var(--divider); }
+  .legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+
+  @media(max-width:600px){header,.controls,main{padding-left:20px;padding-right:20px} .grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Personal Collection</div>
+  <h1>My Library</h1>
+  <p>Business · Leadership · Innovation · Science</p>
+  <div class="book-count-badge">25 Books</div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="search" placeholder="Search by title or author…" oninput="filterBooks()">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('leadership',this)">Leadership</button>
+    <button class="filter-btn" onclick="setFilter('strategy',this)">Strategy</button>
+    <button class="filter-btn" onclick="setFilter('innovation',this)">Innovation</button>
+    <button class="filter-btn" onclick="setFilter('motivation',this)">Motivation</button>
+    <button class="filter-btn" onclick="setFilter('biography',this)">Biography</button>
+    <button class="filter-btn" onclick="setFilter('finance',this)">Finance</button>
+    <button class="filter-btn" onclick="setFilter('science',this)">Science</button>
+    <button class="filter-btn" onclick="setFilter('operations',this)">Operations</button>
+    <button class="filter-btn" onclick="setFilter('hr',this)">HR</button>
+  </div>
+</div>
+
+<main>
+  <div class="section-label"><span>Catalogue</span><span id="result-count"></span></div>
+  <div class="grid" id="grid">
+
+<!-- ═══════════════════════════════════════════════════ BOOK CARDS ═══ -->
+
+<!-- 1. Three Laws of Performance -->
+<div class="card" data-cat="motivation" data-title="the three laws of performance" data-author="steve zaffron dave logan">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d1b3e"/><stop offset="100%" stop-color="#1a3a6e"/></linearGradient>
+      <radialGradient id="g1g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0c040" stop-opacity="0.5"/><stop offset="100%" stop-color="#f0c040" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g1)"/>
+    <!-- stars -->
+    <circle cx="10" cy="8" r="0.8" fill="white" opacity="0.7"/><circle cx="25" cy="5" r="0.6" fill="white" opacity="0.5"/><circle cx="60" cy="10" r="0.9" fill="white" opacity="0.6"/><circle cx="70" cy="4" r="0.5" fill="white" opacity="0.8"/><circle cx="45" cy="7" r="0.7" fill="white" opacity="0.4"/><circle cx="8" cy="20" r="0.5" fill="white" opacity="0.6"/><circle cx="68" cy="22" r="0.8" fill="white" opacity="0.5"/>
+    <!-- glow behind tablets -->
+    <ellipse cx="38" cy="52" rx="28" ry="32" fill="url(#g1g)"/>
+    <!-- Tablet I -->
+    <rect x="14" y="20" width="48" height="16" rx="3" fill="#1a2a5e" stroke="#f0c040" stroke-width="1.2"/>
+    <rect x="16" y="22" width="44" height="12" rx="2" fill="#0d1b3e" opacity="0.6"/>
+    <text x="38" y="31" text-anchor="middle" font-family="serif" font-size="8" fill="#f0c040" font-weight="bold">I</text>
+    <!-- Tablet II -->
+    <rect x="10" y="42" width="56" height="16" rx="3" fill="#1a2a5e" stroke="#f0c040" stroke-width="1.4"/>
+    <rect x="12" y="44" width="52" height="12" rx="2" fill="#0d1b3e" opacity="0.6"/>
+    <text x="38" y="53" text-anchor="middle" font-family="serif" font-size="8" fill="#f0c040" font-weight="bold">II</text>
+    <!-- Tablet III -->
+    <rect x="6" y="64" width="64" height="16" rx="3" fill="#1a2a5e" stroke="#f0c040" stroke-width="1.6"/>
+    <rect x="8" y="66" width="60" height="12" rx="2" fill="#0d1b3e" opacity="0.6"/>
+    <text x="38" y="75" text-anchor="middle" font-family="serif" font-size="8" fill="#f0c040" font-weight="bold">III</text>
+    <!-- bottom band -->
+    <rect y="84" width="76" height="24" fill="#0a1228"/>
+    <text x="38" y="94" text-anchor="middle" font-family="serif" font-size="5.5" fill="white" font-weight="bold">THREE LAWS OF</text>
+    <text x="38" y="101" text-anchor="middle" font-family="serif" font-size="5.5" fill="white" font-weight="bold">PERFORMANCE</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#f0c040">Zaffron &amp; Logan</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Three Laws of Performance</div>
+    <div class="card-author">Steve Zaffron &amp; Dave Logan</div>
+    <div class="card-meta"><span class="tag cat-motivation">Motivation</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 2. Liberty and Tyranny -->
+<div class="card" data-cat="other" data-title="liberty and tyranny" data-author="mark r levin">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g2l" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a6bbf"/><stop offset="100%" stop-color="#4a90e2"/></linearGradient>
+      <linearGradient id="g2r" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient>
+    </defs>
+    <rect width="38" height="108" fill="url(#g2l)"/>
+    <rect x="38" width="38" height="108" fill="url(#g2r)"/>
+    <!-- sun rays left side -->
+    <line x1="0" y1="30" x2="38" y2="54" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <line x1="0" y1="15" x2="38" y2="54" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <line x1="10" y1="0" x2="38" y2="54" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <line x1="25" y1="0" x2="38" y2="54" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <!-- Eagle silhouette (left) -->
+    <ellipse cx="19" cy="38" rx="8" ry="5" fill="#1a1a2e" opacity="0.85"/>
+    <ellipse cx="19" cy="36" rx="3" ry="4" fill="#1a1a2e" opacity="0.85"/>
+    <path d="M6,36 Q13,28 19,34 Q25,28 32,36 Q25,42 19,40 Q13,42 6,36Z" fill="#1a1a2e" opacity="0.8"/>
+    <circle cx="21" cy="34" r="1.5" fill="white"/><!-- eagle head highlight -->
+    <!-- Chains right side -->
+    <ellipse cx="57" cy="20" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <ellipse cx="57" cy="26" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <ellipse cx="57" cy="32" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <ellipse cx="57" cy="38" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <ellipse cx="57" cy="44" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <ellipse cx="57" cy="50" rx="5" ry="3" fill="none" stroke="#888" stroke-width="1.5"/>
+    <!-- Gold divider crack -->
+    <path d="M38,0 L36,20 L40,40 L37,60 L39,80 L38,108" stroke="#f0c040" stroke-width="2" fill="none"/>
+    <!-- bottom band -->
+    <rect y="82" width="76" height="26" fill="#0d0d0d"/>
+    <text x="19" y="93" text-anchor="middle" font-family="serif" font-size="6" fill="#4a90e2" font-weight="bold">LIBERTY</text>
+    <text x="38" y="93" text-anchor="middle" font-family="serif" font-size="6" fill="#f0c040">&amp;</text>
+    <text x="57" y="93" text-anchor="middle" font-family="serif" font-size="6" fill="#cc3333" font-weight="bold">TYRANNY</text>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#aaa">Mark R. Levin</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#666">A Conservative Manifesto</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Liberty and Tyranny</div>
+    <div class="card-author">Mark R. Levin</div>
+    <div class="card-meta"><span class="tag cat-other">Politics</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 3. Leadership Challenge -->
+<div class="card" data-cat="leadership" data-title="the leadership challenge" data-author="kouzes posner">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1a3a"/><stop offset="40%" stop-color="#c0392b"/><stop offset="100%" stop-color="#f39c12"/></linearGradient>
+      <radialGradient id="g3sun" cx="70%" cy="35%" r="30%"><stop offset="0%" stop-color="#ffe066"/><stop offset="100%" stop-color="#f39c12" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g3)"/>
+    <rect width="76" height="108" fill="url(#g3sun)"/>
+    <!-- mountain -->
+    <polygon points="0,90 25,35 50,75 60,55 76,90" fill="#1a1a1a"/>
+    <polygon points="20,90 25,35 30,90" fill="#222"/>
+    <!-- snow cap -->
+    <polygon points="22,42 25,35 28,42 26,40 24,40" fill="white" opacity="0.9"/>
+    <!-- figure at peak -->
+    <circle cx="25" cy="32" r="2" fill="#f0c040"/>
+    <line x1="25" y1="34" x2="25" y2="40" stroke="#f0c040" stroke-width="1.2"/>
+    <line x1="25" y1="36" x2="21" y2="39" stroke="#f0c040" stroke-width="1"/><!-- arm up left -->
+    <line x1="25" y1="36" x2="29" y2="33" stroke="#f0c040" stroke-width="1"/><!-- arm up right -->
+    <line x1="25" y1="40" x2="23" y2="44" stroke="#f0c040" stroke-width="1"/>
+    <line x1="25" y1="40" x2="27" y2="44" stroke="#f0c040" stroke-width="1"/>
+    <!-- stars -->
+    <circle cx="55" cy="12" r="1" fill="white" opacity="0.8"/><circle cx="65" cy="8" r="0.7" fill="white" opacity="0.6"/><circle cx="45" cy="18" r="0.6" fill="white" opacity="0.5"/><circle cx="10" cy="14" r="0.8" fill="white" opacity="0.7"/>
+    <!-- bottom band -->
+    <rect y="84" width="76" height="24" fill="rgba(0,0,0,0.75)"/>
+    <text x="38" y="93" text-anchor="middle" font-family="serif" font-size="5" fill="white" font-weight="bold">THE LEADERSHIP</text>
+    <text x="38" y="100" text-anchor="middle" font-family="serif" font-size="6" fill="#f0c040" font-weight="bold">CHALLENGE</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#ccc">Kouzes &amp; Posner</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Leadership Challenge</div>
+    <div class="card-author">Kouzes &amp; Posner</div>
+    <div class="card-meta"><span class="tag cat-leadership">Leadership</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 4. Jugaad Innovation -->
+<div class="card" data-cat="innovation" data-title="jugaad innovation" data-author="navi radjou jaideep prabhu simone ahuja">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff6b00"/><stop offset="100%" stop-color="#006666"/></linearGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g4)"/>
+    <!-- rangoli mandala -->
+    <circle cx="38" cy="48" r="22" fill="none" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="38" cy="48" r="16" fill="none" stroke="#ffd700" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="38" cy="48" r="10" fill="none" stroke="#ff69b4" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="38" cy="48" r="5" fill="#ffd700" opacity="0.8"/>
+    <!-- petals 8-fold -->
+    <ellipse cx="38" cy="30" rx="4" ry="8" fill="#ff69b4" opacity="0.75" transform="rotate(0,38,48)"/>
+    <ellipse cx="38" cy="30" rx="4" ry="8" fill="#ffd700" opacity="0.65" transform="rotate(45,38,48)"/>
+    <ellipse cx="38" cy="30" rx="4" ry="8" fill="#00ccaa" opacity="0.65" transform="rotate(90,38,48)"/>
+    <ellipse cx="38" cy="30" rx="4" ry="8" fill="#ff6b00" opacity="0.65" transform="rotate(135,38,48)"/>
+    <!-- diamonds scattered -->
+    <polygon points="15,15 18,10 21,15 18,20" fill="#ffd700" opacity="0.8"/>
+    <polygon points="55,8 58,3 61,8 58,13" fill="#ff69b4" opacity="0.8"/>
+    <polygon points="65,55 68,50 71,55 68,60" fill="#ffd700" opacity="0.7"/>
+    <polygon points="5,65 8,60 11,65 8,70" fill="#00ccaa" opacity="0.7"/>
+    <!-- arrows up (innovation breaking upward) -->
+    <polygon points="28,22 38,10 48,22 43,22 43,28 33,28 33,22" fill="white" opacity="0.85"/>
+    <!-- bottom band -->
+    <rect y="83" width="76" height="25" fill="rgba(0,40,40,0.9)"/>
+    <text x="38" y="93" text-anchor="middle" font-family="serif" font-size="8" fill="white" font-weight="bold">JUGAAD</text>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#ffd700" font-weight="bold">INNOVATION</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#aaddcc">Radjou · Prabhu · Ahuja</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Jugaad Innovation</div>
+    <div class="card-author">Navi Radjou, Jaideep Prabhu &amp; Simone Ahuja</div>
+    <div class="card-meta"><span class="tag cat-innovation">Innovation</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 5. Why Can't We Get Anything Done -->
+<div class="card" data-cat="operations" data-title="why cant we get anything done around here" data-author="lefton loeb">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5f0e8"/><stop offset="100%" stop-color="#e8e0d0"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g5)"/>
+    <!-- gears -->
+    <circle cx="30" cy="45" r="16" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+    <circle cx="30" cy="45" r="8" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+    <circle cx="52" cy="55" r="11" fill="none" stroke="#c0392b" stroke-width="2"/>
+    <circle cx="52" cy="55" r="5" fill="none" stroke="#c0392b" stroke-width="1.2"/>
+    <circle cx="18" cy="62" r="8" fill="none" stroke="#e67e22" stroke-width="1.8"/>
+    <!-- gear teeth approximated with small rects -->
+    <rect x="27" y="27" width="6" height="4" rx="1" fill="#c0392b"/>
+    <rect x="27" y="59" width="6" height="4" rx="1" fill="#c0392b"/>
+    <rect x="12" y="42" width="4" height="6" rx="1" fill="#c0392b"/>
+    <rect x="44" y="42" width="4" height="6" rx="1" fill="#c0392b"/>
+    <rect x="14" y="31" width="4" height="5" rx="1" fill="#c0392b" transform="rotate(-45,16,33)"/>
+    <rect x="40" y="31" width="4" height="5" rx="1" fill="#c0392b" transform="rotate(45,42,33)"/>
+    <!-- loop arrows (confusion) -->
+    <path d="M60,30 Q72,20 70,40 Q68,55 58,48" stroke="#e67e22" stroke-width="1.5" fill="none"/>
+    <polygon points="58,48 55,44 62,44" fill="#e67e22"/>
+    <!-- stick figures frozen -->
+    <circle cx="8" cy="25" r="3" fill="#2c3e50"/><line x1="8" y1="28" x2="8" y2="36" stroke="#2c3e50" stroke-width="1.2"/><line x1="8" y1="30" x2="4" y2="27" stroke="#2c3e50" stroke-width="1"/><line x1="8" y1="30" x2="12" y2="33" stroke="#2c3e50" stroke-width="1"/>
+    <circle cx="68" cy="28" r="3" fill="#2c3e50"/><line x1="68" y1="31" x2="68" y2="39" stroke="#2c3e50" stroke-width="1.2"/><line x1="68" y1="33" x2="64" y2="36" stroke="#2c3e50" stroke-width="1"/><line x1="68" y1="33" x2="72" y2="30" stroke="#2c3e50" stroke-width="1"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="18" fill="#1a2a4a"/>
+    <text x="38" y="7" text-anchor="middle" font-family="sans-serif" font-size="4" fill="white">WHY CAN'T WE GET</text>
+    <text x="38" y="13" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#f39c12" font-weight="bold">ANYTHING DONE?</text>
+    <!-- bottom band -->
+    <rect y="90" width="76" height="18" fill="#1a2a4a"/>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#aaa">Lefton &amp; Loeb</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#666">Around Here</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Why Can't We Get Anything Done Around Here?</div>
+    <div class="card-author">Lefton &amp; Loeb</div>
+    <div class="card-meta"><span class="tag cat-operations">Operations</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 6. The Ultimate Gift -->
+<div class="card" data-cat="motivation" data-title="the ultimate gift" data-author="jim stovall">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g6" cx="50%" cy="55%" r="55%"><stop offset="0%" stop-color="#fff5e0"/><stop offset="60%" stop-color="#c8860a"/><stop offset="100%" stop-color="#5c2d00"/></radialGradient>
+      <radialGradient id="g6glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffe066" stop-opacity="0.9"/><stop offset="100%" stop-color="#ffe066" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g6)"/>
+    <!-- light rays -->
+    <line x1="38" y1="50" x2="5" y2="5" stroke="#ffe066" stroke-width="1" opacity="0.4"/>
+    <line x1="38" y1="50" x2="20" y2="0" stroke="#ffe066" stroke-width="1" opacity="0.4"/>
+    <line x1="38" y1="50" x2="38" y2="0" stroke="#ffe066" stroke-width="1.2" opacity="0.5"/>
+    <line x1="38" y1="50" x2="56" y2="0" stroke="#ffe066" stroke-width="1" opacity="0.4"/>
+    <line x1="38" y1="50" x2="71" y2="5" stroke="#ffe066" stroke-width="1" opacity="0.4"/>
+    <line x1="38" y1="50" x2="76" y2="25" stroke="#ffe066" stroke-width="0.8" opacity="0.3"/>
+    <line x1="38" y1="50" x2="0" y2="25" stroke="#ffe066" stroke-width="0.8" opacity="0.3"/>
+    <!-- glow -->
+    <ellipse cx="38" cy="50" rx="22" ry="22" fill="url(#g6glow)"/>
+    <!-- gift box -->
+    <rect x="20" y="54" width="36" height="26" rx="2" fill="#8b0000"/>
+    <rect x="20" y="54" width="36" height="26" rx="2" fill="none" stroke="#ffd700" stroke-width="1"/>
+    <rect x="35" y="54" width="6" height="26" fill="#ffd700" opacity="0.8"/><!-- vertical ribbon -->
+    <rect x="20" y="63" width="36" height="5" fill="#ffd700" opacity="0.8"/><!-- horizontal ribbon -->
+    <!-- bow -->
+    <ellipse cx="31" cy="54" rx="8" ry="5" fill="#ffd700" opacity="0.9" transform="rotate(-20,31,54)"/>
+    <ellipse cx="45" cy="54" rx="8" ry="5" fill="#ffd700" opacity="0.9" transform="rotate(20,45,54)"/>
+    <circle cx="38" cy="54" r="4" fill="#ffd700"/>
+    <!-- sparkles -->
+    <circle cx="15" cy="35" r="2" fill="#ffe066" opacity="0.8"/><circle cx="60" cy="30" r="1.5" fill="#ffe066" opacity="0.7"/><circle cx="12" cy="58" r="1.5" fill="#ffe066" opacity="0.6"/><circle cx="64" cy="60" r="2" fill="#ffe066" opacity="0.7"/>
+    <!-- top text -->
+    <rect y="0" width="76" height="16" fill="rgba(0,0,0,0.5)"/>
+    <text x="38" y="11" text-anchor="middle" font-family="serif" font-size="6.5" fill="white" font-weight="bold">THE ULTIMATE</text>
+    <!-- bottom -->
+    <rect y="90" width="76" height="18" fill="rgba(0,0,0,0.6)"/>
+    <text x="38" y="99" text-anchor="middle" font-family="serif" font-size="9" fill="#ffd700" font-weight="bold">GIFT</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#ddd">Jim Stovall</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Ultimate Gift</div>
+    <div class="card-author">Jim Stovall</div>
+    <div class="card-meta"><span class="tag cat-motivation">Motivation</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 7. Retire Young Retire Rich -->
+<div class="card" data-cat="finance" data-title="retire young retire rich" data-author="robert t kiyosaki">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g7sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#001a4d"/><stop offset="60%" stop-color="#0066bb"/><stop offset="100%" stop-color="#0099cc"/></linearGradient>
+      <radialGradient id="g7sun" cx="70%" cy="55%" r="25%"><stop offset="0%" stop-color="#ffe066"/><stop offset="40%" stop-color="#ff9900"/><stop offset="100%" stop-color="#ff9900" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g7sky)"/>
+    <rect width="76" height="108" fill="url(#g7sun)"/>
+    <!-- ocean waves -->
+    <path d="M0,80 Q19,72 38,80 Q57,88 76,80 L76,108 L0,108Z" fill="#004488"/>
+    <path d="M0,86 Q19,78 38,86 Q57,94 76,86 L76,108 L0,108Z" fill="#003377"/>
+    <!-- sun -->
+    <circle cx="53" cy="55" r="12" fill="#ffd700"/>
+    <line x1="53" y1="38" x2="53" y2="34" stroke="#ffd700" stroke-width="1.5"/><line x1="53" y1="72" x2="53" y2="76" stroke="#ffd700" stroke-width="1.5"/>
+    <line x1="36" y1="55" x2="32" y2="55" stroke="#ffd700" stroke-width="1.5"/><line x1="70" y1="55" x2="74" y2="55" stroke="#ffd700" stroke-width="1.5"/>
+    <line x1="41" y1="43" x2="38" y2="40" stroke="#ffd700" stroke-width="1.2"/><line x1="65" y1="43" x2="68" y2="40" stroke="#ffd700" stroke-width="1.2"/>
+    <!-- palm tree -->
+    <rect x="14" y="55" width="3" height="28" rx="1" fill="#5c3a1e"/>
+    <ellipse cx="15" cy="54" rx="12" ry="5" fill="#2d8a2d" transform="rotate(-20,15,54)"/>
+    <ellipse cx="15" cy="52" rx="10" ry="4" fill="#2d8a2d" transform="rotate(15,15,52)"/>
+    <ellipse cx="15" cy="50" rx="9" ry="4" fill="#3aaa3a" transform="rotate(-5,15,50)"/>
+    <!-- figure on beach -->
+    <circle cx="40" cy="76" r="3" fill="#c68642"/>
+    <line x1="40" y1="79" x2="40" y2="86" stroke="#c68642" stroke-width="1.5"/>
+    <line x1="40" y1="82" x2="36" y2="85" stroke="#c68642" stroke-width="1"/><line x1="40" y1="82" x2="44" y2="79" stroke="#c68642" stroke-width="1"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="20" fill="rgba(0,0,0,0.6)"/>
+    <text x="38" y="9" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="#ffd700" font-weight="bold">RETIRE YOUNG</text>
+    <text x="38" y="17" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="white" font-weight="bold">RETIRE RICH</text>
+    <!-- bottom -->
+    <rect y="90" width="76" height="18" fill="rgba(0,0,0,0.7)"/>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#ffd700">Robert T. Kiyosaki</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#aaa">Rich Dad Poor Dad Series</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Retire Young Retire Rich</div>
+    <div class="card-author">Robert T. Kiyosaki</div>
+    <div class="card-meta"><span class="tag cat-finance">Finance</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 8. A Mother's Heart -->
+<div class="card" data-cat="biography" data-title="a mothers heart" data-author="arun shourie">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g8" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#fff5ee"/><stop offset="50%" stop-color="#d4956a"/><stop offset="100%" stop-color="#5c2a00"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g8)"/>
+    <!-- heart shape -->
+    <path d="M38,72 C38,72 14,55 14,38 C14,27 22,20 30,22 C34,23 37,26 38,28 C39,26 42,23 46,22 C54,20 62,27 62,38 C62,55 38,72 38,72Z" fill="#e8a0a0" opacity="0.9"/>
+    <path d="M38,68 C38,68 18,53 18,38 C18,30 24,24 31,26 C34.5,27 37,30 38,32 C39,30 41.5,27 45,26 C52,24 58,30 58,38 C58,53 38,68 38,68Z" fill="#cc5555" opacity="0.8"/>
+    <!-- glow behind heart -->
+    <ellipse cx="38" cy="45" rx="20" ry="18" fill="#ffaaaa" opacity="0.3"/>
+    <!-- two hands cradling -->
+    <path d="M12,70 Q16,60 22,58 Q28,56 30,62 Q32,68 38,70 Q44,68 46,62 Q48,56 54,58 Q60,60 64,70" stroke="#c68642" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- floating petals -->
+    <ellipse cx="18" cy="30" rx="4" ry="2" fill="#ffaaaa" opacity="0.7" transform="rotate(30,18,30)"/>
+    <ellipse cx="60" cy="25" rx="3" ry="1.5" fill="#ffccaa" opacity="0.7" transform="rotate(-20,60,25)"/>
+    <ellipse cx="55" cy="65" rx="3" ry="1.5" fill="#ffaaaa" opacity="0.6" transform="rotate(45,55,65)"/>
+    <ellipse cx="15" cy="58" rx="3" ry="1.5" fill="#ffccaa" opacity="0.6" transform="rotate(-30,15,58)"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="16" fill="rgba(80,20,0,0.7)"/>
+    <text x="38" y="11" text-anchor="middle" font-family="serif" font-size="5.5" fill="#ffd4aa" font-style="italic">Arun Shourie</text>
+    <!-- bottom band -->
+    <rect y="85" width="76" height="23" fill="rgba(80,20,0,0.8)"/>
+    <text x="38" y="96" text-anchor="middle" font-family="serif" font-size="7" fill="white" font-style="italic">…a mother's</text>
+    <text x="38" y="104" text-anchor="middle" font-family="serif" font-size="7" fill="#ffaaaa" font-style="italic">heart?</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">…A Mother's Heart?</div>
+    <div class="card-author">Arun Shourie</div>
+    <div class="card-meta"><span class="tag cat-biography">Biography</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 9. The Toyota Way -->
+<div class="card" data-cat="operations" data-title="the toyota way" data-author="jeffrey liker">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g9" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#111"/><stop offset="100%" stop-color="#2a2a2a"/></linearGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g9)"/>
+    <!-- grid lines technical -->
+    <line x1="0" y1="30" x2="76" y2="30" stroke="#cc0000" stroke-width="0.4" opacity="0.4"/>
+    <line x1="0" y1="60" x2="76" y2="60" stroke="#cc0000" stroke-width="0.4" opacity="0.4"/>
+    <line x1="25" y1="0" x2="25" y2="80" stroke="#cc0000" stroke-width="0.4" opacity="0.4"/>
+    <line x1="50" y1="0" x2="50" y2="80" stroke="#cc0000" stroke-width="0.4" opacity="0.4"/>
+    <!-- car silhouette -->
+    <path d="M8,62 Q8,55 15,52 L22,45 Q28,40 38,39 Q50,39 55,43 L62,50 Q68,52 68,58 L68,65 Q65,67 58,67 L18,67 Q8,67 8,62Z" fill="#c0c0c0"/>
+    <path d="M22,50 L26,43 Q32,38 44,38 Q54,40 58,45 L62,50Z" fill="#888"/><!-- windshield -->
+    <circle cx="22" cy="67" r="7" fill="#333" stroke="#888" stroke-width="1.5"/>
+    <circle cx="22" cy="67" r="3.5" fill="#666"/>
+    <circle cx="55" cy="67" r="7" fill="#333" stroke="#888" stroke-width="1.5"/>
+    <circle cx="55" cy="67" r="3.5" fill="#666"/>
+    <!-- headlight -->
+    <ellipse cx="66" cy="57" rx="3" ry="2" fill="#ffffaa"/>
+    <!-- red band top -->
+    <rect y="0" width="76" height="22" fill="#cc0000"/>
+    <text x="38" y="9" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="white" font-weight="bold">THE</text>
+    <text x="38" y="18" text-anchor="middle" font-family="sans-serif" font-size="7" fill="white" font-weight="bold">TOYOTA WAY</text>
+    <!-- bottom band -->
+    <rect y="82" width="76" height="26" fill="#111"/>
+    <text x="38" y="93" text-anchor="middle" font-family="sans-serif" font-size="4.2" fill="#cc0000" font-weight="bold">14 MANAGEMENT PRINCIPLES</text>
+    <text x="38" y="100" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">from the World's Greatest</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Manufacturer · Jeffrey K. Liker</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Toyota Way</div>
+    <div class="card-author">Jeffrey K. Liker</div>
+    <div class="card-meta"><span class="tag cat-operations">Operations</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 10. If It Ain't Broke Break It -->
+<div class="card" data-cat="strategy" data-title="if it aint broke break it" data-author="kriegel patler">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g10" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff6600"/><stop offset="60%" stop-color="#cc2200"/><stop offset="100%" stop-color="#111"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="#111"/>
+    <rect width="76" height="108" fill="url(#g10)" opacity="0.7"/>
+    <!-- cracked mold/egg shape -->
+    <ellipse cx="38" cy="52" rx="22" ry="26" fill="#333" stroke="#555" stroke-width="1"/>
+    <!-- crack lines -->
+    <path d="M38,26 L34,36 L42,44 L36,52 L40,60 L35,70 L38,78" stroke="#ff6600" stroke-width="2" fill="none"/>
+    <path d="M38,44 L28,38 L22,42" stroke="#ff8800" stroke-width="1.5" fill="none"/>
+    <path d="M38,52 L50,46 L56,50" stroke="#ff8800" stroke-width="1.5" fill="none"/>
+    <path d="M38,60 L46,66 L50,62" stroke="#ffaa00" stroke-width="1.2" fill="none"/>
+    <!-- energy burst through cracks -->
+    <ellipse cx="38" cy="52" rx="10" ry="12" fill="#ff6600" opacity="0.6"/>
+    <ellipse cx="38" cy="52" rx="5" ry="6" fill="#ffcc00" opacity="0.8"/>
+    <!-- debris chips -->
+    <polygon points="15,30 20,25 22,32" fill="#444"/><polygon points="55,28 60,22 62,30" fill="#444"/>
+    <polygon points="12,58 16,53 18,60" fill="#444"/><polygon points="58,65 63,60 65,68" fill="#444"/>
+    <!-- energy rays -->
+    <line x1="38" y1="52" x2="10" y2="15" stroke="#ffcc00" stroke-width="0.8" opacity="0.5"/>
+    <line x1="38" y1="52" x2="66" y2="15" stroke="#ffcc00" stroke-width="0.8" opacity="0.5"/>
+    <line x1="38" y1="52" x2="5" y2="55" stroke="#ff8800" stroke-width="0.8" opacity="0.5"/>
+    <line x1="38" y1="52" x2="71" y2="55" stroke="#ff8800" stroke-width="0.8" opacity="0.5"/>
+    <!-- top text -->
+    <rect y="0" width="76" height="16" fill="rgba(0,0,0,0.8)"/>
+    <text x="38" y="9" text-anchor="middle" font-family="sans-serif" font-size="4.2" fill="white">IF IT AIN'T BROKE…</text>
+    <!-- bottom -->
+    <rect y="84" width="76" height="24" fill="rgba(0,0,0,0.85)"/>
+    <text x="38" y="96" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#ff6600" font-weight="bold">BREAK IT!</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Kriegel &amp; Patler</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">If It Ain't Broke…Break It!</div>
+    <div class="card-author">Kriegel &amp; Patler</div>
+    <div class="card-meta"><span class="tag cat-strategy">Strategy</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 11. Elon Musk -->
+<div class="card" data-cat="biography" data-title="elon musk" data-author="ashlee vance">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g11" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#050520"/><stop offset="100%" stop-color="#000005"/></radialGradient>
+      <radialGradient id="g11ex" cx="50%" cy="100%" r="30%"><stop offset="0%" stop-color="#ff8800"/><stop offset="50%" stop-color="#ff4400" stop-opacity="0.6"/><stop offset="100%" stop-color="#ff0000" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g11)"/>
+    <!-- stars -->
+    <circle cx="10" cy="10" r="0.8" fill="white" opacity="0.9"/><circle cx="20" cy="5" r="0.5" fill="white" opacity="0.7"/><circle cx="35" cy="8" r="0.7" fill="white" opacity="0.8"/><circle cx="50" cy="4" r="0.6" fill="white" opacity="0.6"/><circle cx="65" cy="12" r="0.9" fill="white" opacity="0.9"/><circle cx="72" cy="7" r="0.5" fill="white" opacity="0.7"/><circle cx="5" cy="22" r="0.6" fill="white" opacity="0.6"/><circle cx="58" cy="20" r="0.7" fill="#aaccff" opacity="0.8"/><circle cx="14" cy="35" r="0.5" fill="white" opacity="0.5"/><circle cx="70" cy="30" r="0.6" fill="white" opacity="0.7"/><circle cx="42" cy="18" r="0.4" fill="white" opacity="0.5"/><circle cx="28" cy="28" r="0.5" fill="#aaccff" opacity="0.6"/>
+    <!-- Earth arc at bottom -->
+    <path d="M0,92 Q38,75 76,92 L76,108 L0,108Z" fill="#1a4a8a"/>
+    <path d="M0,96 Q38,80 76,96 L76,108 L0,108Z" fill="#1a5faa"/>
+    <!-- cloud on earth -->
+    <ellipse cx="20" cy="92" rx="8" ry="3" fill="white" opacity="0.4"/>
+    <ellipse cx="55" cy="88" rx="6" ry="2.5" fill="white" opacity="0.3"/>
+    <!-- rocket body -->
+    <polygon points="38,18 32,60 44,60" fill="#d0d0d0"/>
+    <polygon points="38,18 34,25 42,25" fill="#e8e8e8"/><!-- nose cone highlight -->
+    <!-- rocket fins -->
+    <polygon points="32,60 26,72 32,68" fill="#b0b0b0"/>
+    <polygon points="44,60 50,72 44,68" fill="#b0b0b0"/>
+    <!-- window -->
+    <circle cx="38" cy="45" r="4" fill="#224488" stroke="#aaccff" stroke-width="0.8"/>
+    <circle cx="38" cy="45" r="2" fill="#3366cc" opacity="0.7"/>
+    <!-- exhaust trail -->
+    <rect width="76" height="108" fill="url(#g11ex)" opacity="0.9"/>
+    <!-- exhaust detail -->
+    <ellipse cx="38" cy="76" rx="5" ry="8" fill="#ff8800" opacity="0.7"/>
+    <ellipse cx="38" cy="80" rx="3" ry="5" fill="#ffcc00" opacity="0.8"/>
+    <!-- top text -->
+    <text x="38" y="12" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="white" font-weight="bold">ELON MUSK</text>
+    <!-- bottom -->
+    <rect y="90" width="76" height="18" fill="rgba(0,0,20,0.85)"/>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#aaccff">Ashlee Vance</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#666">Tesla · SpaceX · The Quest for a Fantastic Future</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Elon Musk</div>
+    <div class="card-author">Ashlee Vance</div>
+    <div class="card-meta"><span class="tag cat-biography">Biography</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 12. Dance of Molecules -->
+<div class="card" data-cat="science" data-title="the dance of molecules" data-author="ted sargent">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g12" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#050530"/><stop offset="100%" stop-color="#000010"/></radialGradient>
+      <radialGradient id="g12a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00ffe0"/><stop offset="100%" stop-color="#00ffe0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="g12b" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9b59b6"/><stop offset="100%" stop-color="#9b59b6" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g12)"/>
+    <!-- molecule 1 (teal, center) -->
+    <circle cx="38" cy="48" r="7" fill="none"/><circle cx="38" cy="48" r="6" fill="#00998a" opacity="0.9"/>
+    <circle cx="38" cy="48" r="3" fill="#00ffe0" opacity="0.9"/>
+    <ellipse cx="38" cy="48" rx="14" ry="14" fill="url(#g12a)" opacity="0.35"/>
+    <!-- bonds and atoms around center -->
+    <line x1="38" y1="42" x2="30" y2="32" stroke="#00ffe0" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="28" cy="30" r="4" fill="#006655" opacity="0.9"/><circle cx="28" cy="30" r="2" fill="#00ffe0" opacity="0.8"/>
+    <line x1="38" y1="42" x2="48" y2="30" stroke="#00ffe0" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="50" cy="28" r="3.5" fill="#006655" opacity="0.9"/><circle cx="50" cy="28" r="1.8" fill="#00ffe0" opacity="0.8"/>
+    <line x1="38" y1="54" x2="26" y2="64" stroke="#00ffe0" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="24" cy="66" r="4" fill="#006655" opacity="0.9"/><circle cx="24" cy="66" r="2" fill="#00ffe0" opacity="0.8"/>
+    <line x1="38" y1="54" x2="50" y2="64" stroke="#00ffe0" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="52" cy="66" r="3.5" fill="#9b59b6" opacity="0.9"/><circle cx="52" cy="66" r="1.8" fill="#cc88ff" opacity="0.8"/>
+    <!-- molecule 2 (violet, upper right) -->
+    <circle cx="62" cy="22" r="5" fill="#7a2a9a" opacity="0.85"/>
+    <circle cx="62" cy="22" r="2.5" fill="#cc88ff" opacity="0.9"/>
+    <ellipse cx="62" cy="22" rx="10" ry="10" fill="url(#g12b)" opacity="0.3"/>
+    <line x1="62" y1="17" x2="70" y2="10" stroke="#cc88ff" stroke-width="0.7" opacity="0.6"/>
+    <circle cx="71" cy="9" r="2.5" fill="#5a1a7a" opacity="0.9"/>
+    <!-- particle dots scattered -->
+    <circle cx="8" cy="15" r="1" fill="#00ffe0" opacity="0.5"/><circle cx="70" cy="45" r="1.2" fill="#cc88ff" opacity="0.6"/><circle cx="15" cy="75" r="0.8" fill="#00ffe0" opacity="0.4"/><circle cx="65" cy="80" r="1" fill="#3399ff" opacity="0.5"/><circle cx="5" cy="50" r="0.8" fill="#cc88ff" opacity="0.4"/><circle cx="72" cy="65" r="0.8" fill="#00ffe0" opacity="0.5"/>
+    <!-- top text -->
+    <rect y="0" width="76" height="16" fill="rgba(0,0,20,0.8)"/>
+    <text x="38" y="8" text-anchor="middle" font-family="serif" font-size="4.5" fill="#00ffe0">THE DANCE OF</text>
+    <text x="38" y="14" text-anchor="middle" font-family="serif" font-size="6" fill="white" font-weight="bold">MOLECULES</text>
+    <!-- bottom -->
+    <rect y="86" width="76" height="22" fill="rgba(0,0,20,0.9)"/>
+    <text x="38" y="95" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">How Nanotechnology Is</text>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Changing Our Lives</text>
+    <text x="38" y="107" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#00ffe0">Ted Sargent</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Dance of Molecules</div>
+    <div class="card-author">Ted Sargent</div>
+    <div class="card-meta"><span class="tag cat-science">Science</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 13. Corporate Combat -->
+<div class="card" data-cat="strategy" data-title="corporate combat" data-author="nick skellon">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g13" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#111"/><stop offset="100%" stop-color="#1a0000"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g13)"/>
+    <!-- chessboard (rotated) -->
+    <g transform="translate(38,52) rotate(15) translate(-24,-24)">
+      <rect x="0" y="0" width="12" height="12" fill="#333"/><rect x="12" y="0" width="12" height="12" fill="#555"/><rect x="24" y="0" width="12" height="12" fill="#333"/><rect x="36" y="0" width="12" height="12" fill="#555"/>
+      <rect x="0" y="12" width="12" height="12" fill="#555"/><rect x="12" y="12" width="12" height="12" fill="#333"/><rect x="24" y="12" width="12" height="12" fill="#555"/><rect x="36" y="12" width="12" height="12" fill="#333"/>
+      <rect x="0" y="24" width="12" height="12" fill="#333"/><rect x="12" y="24" width="12" height="12" fill="#555"/><rect x="24" y="24" width="12" height="12" fill="#333"/><rect x="36" y="24" width="12" height="12" fill="#555"/>
+      <rect x="0" y="36" width="12" height="12" fill="#555"/><rect x="12" y="36" width="12" height="12" fill="#333"/><rect x="24" y="36" width="12" height="12" fill="#555"/><rect x="36" y="36" width="12" height="12" fill="#333"/>
+    </g>
+    <!-- King piece (gold) -->
+    <rect x="34" y="28" width="8" height="14" rx="1" fill="#ffd700"/>
+    <rect x="32" y="40" width="12" height="3" rx="1" fill="#ffd700"/>
+    <rect x="36" y="24" width="4" height="6" rx="1" fill="#ffd700"/><!-- cross top -->
+    <rect x="33" y="26" width="10" height="3" rx="1" fill="#ffd700"/>
+    <circle cx="38" cy="30" r="2.5" fill="#cc9900"/>
+    <!-- spotlight -->
+    <path d="M20,0 L38,28 L56,0Z" fill="#ffe066" opacity="0.08"/>
+    <!-- red arrows -->
+    <path d="M10,55 Q38,40 65,55" stroke="#cc0000" stroke-width="1.5" fill="none"/>
+    <polygon points="65,55 60,50 62,57" fill="#cc0000"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="18" fill="#8b0000"/>
+    <text x="38" y="8" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="white" font-weight="bold">CORPORATE</text>
+    <text x="38" y="15" text-anchor="middle" font-family="sans-serif" font-size="6" fill="#ffd700" font-weight="bold">COMBAT</text>
+    <!-- bottom -->
+    <rect y="87" width="76" height="21" fill="rgba(0,0,0,0.85)"/>
+    <text x="38" y="96" text-anchor="middle" font-family="serif" font-size="3.8" fill="#cc0000" font-style="italic">The Art of Market Warfare</text>
+    <text x="38" y="104" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#aaa">Nick Skellon</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Corporate Combat</div>
+    <div class="card-author">Nick Skellon</div>
+    <div class="card-meta"><span class="tag cat-strategy">Strategy</span><span class="shelf-tag">Shelf 1</span></div>
+  </div>
+</div>
+
+<!-- 14. Balanced Scorecard -->
+<div class="card" data-cat="strategy" data-title="the balanced scorecard" data-author="kaplan norton">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g14" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d1b3e"/><stop offset="100%" stop-color="#1a2e5a"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g14)"/>
+    <!-- 4 quadrant panels -->
+    <rect x="5" y="18" width="31" height="28" rx="2" fill="#1a2e5a" stroke="#b5873a" stroke-width="0.8"/>
+    <rect x="40" y="18" width="31" height="28" rx="2" fill="#1a2e5a" stroke="#b5873a" stroke-width="0.8"/>
+    <rect x="5" y="52" width="31" height="28" rx="2" fill="#1a2e5a" stroke="#b5873a" stroke-width="0.8"/>
+    <rect x="40" y="52" width="31" height="28" rx="2" fill="#1a2e5a" stroke="#b5873a" stroke-width="0.8"/>
+    <!-- Q1: bar chart -->
+    <rect x="10" y="36" width="4" height="7" fill="#b5873a"/><rect x="16" y="32" width="4" height="11" fill="#b5873a"/><rect x="22" y="27" width="4" height="16" fill="#f0c040"/><rect x="28" y="30" width="4" height="13" fill="#b5873a"/>
+    <!-- Q2: gauge dial -->
+    <circle cx="55" cy="32" r="10" fill="#0d1b3e" stroke="#b5873a" stroke-width="0.8"/>
+    <path d="M45,35 A10,10 0 0,1 65,35" stroke="#cc3333" stroke-width="2" fill="none"/>
+    <line x1="55" y1="32" x2="63" y2="27" stroke="#f0c040" stroke-width="1.5"/>
+    <circle cx="55" cy="32" r="1.5" fill="#f0c040"/>
+    <!-- Q3: line chart -->
+    <polyline points="10,72 16,68 22,70 28,64 34,60" fill="none" stroke="#00aaff" stroke-width="1.5"/>
+    <circle cx="34" cy="60" r="1.5" fill="#00aaff"/>
+    <!-- Q4: bullseye -->
+    <circle cx="55" cy="66" r="9" fill="none" stroke="#cc3333" stroke-width="1.2"/>
+    <circle cx="55" cy="66" r="5.5" fill="none" stroke="#cc3333" stroke-width="1"/>
+    <circle cx="55" cy="66" r="2.5" fill="#cc3333"/>
+    <!-- connecting lines between quadrant centers -->
+    <line x1="20" y1="32" x2="55" y2="32" stroke="#b5873a" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <line x1="20" y1="66" x2="55" y2="66" stroke="#b5873a" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <line x1="20" y1="32" x2="20" y2="66" stroke="#b5873a" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <line x1="55" y1="32" x2="55" y2="66" stroke="#b5873a" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <!-- gold border frame -->
+    <rect x="2" y="2" width="72" height="104" rx="2" fill="none" stroke="#b5873a" stroke-width="1"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="16" fill="#0a1228"/>
+    <text x="38" y="7" text-anchor="middle" font-family="serif" font-size="4.5" fill="#b5873a">THE BALANCED</text>
+    <text x="38" y="13" text-anchor="middle" font-family="serif" font-size="6" fill="white" font-weight="bold">SCORECARD</text>
+    <!-- bottom -->
+    <rect y="85" width="76" height="23" fill="#0a1228"/>
+    <text x="38" y="96" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#b5873a">Translating Strategy Into Action</text>
+    <text x="38" y="103" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Kaplan &amp; Norton</text>
+    <text x="38" y="109" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#666">Harvard Business School Press</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Balanced Scorecard</div>
+    <div class="card-author">Kaplan &amp; Norton</div>
+    <div class="card-meta"><span class="tag cat-strategy">Strategy</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 15. Build Borrow or Buy -->
+<div class="card" data-cat="strategy" data-title="build borrow or buy" data-author="capron mitchell">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g15" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a3a5c"/><stop offset="100%" stop-color="#2a6090"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g15)"/>
+    <!-- three converging roads in perspective -->
+    <polygon points="8,85 20,35 28,85" fill="#2a4a6a"/><!-- left road -->
+    <polygon points="28,85 36,25 44,85" fill="#2d5a7a"/><!-- center road -->
+    <polygon points="48,85 56,35 68,85" fill="#2a4a6a"/><!-- right road -->
+    <!-- vanishing point glow -->
+    <circle cx="38" cy="25" r="8" fill="#ffd700" opacity="0.7"/>
+    <circle cx="38" cy="25" r="4" fill="white" opacity="0.9"/>
+    <line x1="38" y1="17" x2="38" y2="8" stroke="#ffd700" stroke-width="1" opacity="0.5"/>
+    <line x1="38" y1="17" x2="30" y2="10" stroke="#ffd700" stroke-width="0.8" opacity="0.4"/>
+    <line x1="38" y1="17" x2="46" y2="10" stroke="#ffd700" stroke-width="0.8" opacity="0.4"/>
+    <!-- road labels -->
+    <rect x="7" y="60" width="16" height="8" rx="1" fill="#2255aa"/>
+    <text x="15" y="66" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="white" font-weight="bold">BUILD</text>
+    <rect x="29" y="55" width="18" height="8" rx="1" fill="#555"/>
+    <text x="38" y="61" text-anchor="middle" font-family="sans-serif" font-size="4" fill="white" font-weight="bold">BORROW</text>
+    <rect x="51" y="60" width="16" height="8" rx="1" fill="#2a8a2a"/>
+    <text x="59" y="66" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="white" font-weight="bold">BUY</text>
+    <!-- top band -->
+    <rect y="0" width="76" height="20" fill="#0d1e33"/>
+    <rect x="4" y="3" width="18" height="13" rx="1" fill="#2255aa"/>
+    <text x="13" y="12" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="white" font-weight="bold">BUILD</text>
+    <rect x="25" y="3" width="26" height="13" rx="1" fill="#555"/>
+    <text x="38" y="12" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="white" font-weight="bold">BORROW</text>
+    <rect x="54" y="3" width="18" height="13" rx="1" fill="#2a8a2a"/>
+    <text x="63" y="12" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="white" font-weight="bold">OR BUY</text>
+    <!-- bottom -->
+    <rect y="88" width="76" height="20" fill="#0d1e33"/>
+    <text x="38" y="98" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Solving the Growth Dilemma</text>
+    <text x="38" y="105" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#7ab5e0">Capron &amp; Mitchell</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Build, Borrow or Buy</div>
+    <div class="card-author">Capron &amp; Mitchell</div>
+    <div class="card-meta"><span class="tag cat-strategy">Strategy</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 16. Drive -->
+<div class="card" data-cat="motivation" data-title="drive" data-author="daniel h pink">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g16" cx="50%" cy="65%" r="60%"><stop offset="0%" stop-color="#ff6600"/><stop offset="40%" stop-color="#cc2200"/><stop offset="100%" stop-color="#1a0000"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="#1a0000"/>
+    <rect width="76" height="108" fill="url(#g16)" opacity="0.9"/>
+    <!-- flame tongues -->
+    <path d="M38,85 C30,75 20,65 24,50 C26,42 32,38 30,28 C34,35 33,40 36,45 C34,35 38,20 38,20 C38,20 42,35 40,45 C43,40 42,35 46,28 C44,38 50,42 52,50 C56,65 46,75 38,85Z" fill="#ff4400"/>
+    <path d="M38,80 C33,70 26,62 29,50 C31,44 35,42 34,34 C37,40 36,44 38,48 C38,48 39,34 42,30 C40,38 44,44 47,50 C50,62 43,70 38,80Z" fill="#ff8800"/>
+    <path d="M38,74 C34,66 30,58 33,50 C35,45 37,44 37,38 C39,43 38,46 39,50 C39,50 40,40 42,36 C40,44 43,48 45,54 C47,62 42,68 38,74Z" fill="#ffcc00"/>
+    <path d="M38,65 C35,59 33,54 35,48 C36,45 38,43 38,43 C38,43 40,45 41,48 C43,54 41,59 38,65Z" fill="#fff5cc"/>
+    <!-- sparks -->
+    <circle cx="25" cy="40" r="1.5" fill="#ffcc00" opacity="0.8"/><circle cx="50" cy="35" r="1.2" fill="#ffcc00" opacity="0.7"/><circle cx="20" cy="55" r="1" fill="#ff8800" opacity="0.6"/><circle cx="56" cy="50" r="1.3" fill="#ff8800" opacity="0.7"/><circle cx="30" cy="25" r="0.8" fill="#ffcc00" opacity="0.5"/><circle cx="48" cy="22" r="1" fill="#ffcc00" opacity="0.6"/>
+    <!-- figure silhouette at base -->
+    <circle cx="38" cy="92" r="3" fill="#1a0000" opacity="0.8"/>
+    <line x1="38" y1="95" x2="38" y2="102" stroke="#1a0000" stroke-width="2" opacity="0.8"/>
+    <line x1="38" y1="97" x2="32" y2="101" stroke="#1a0000" stroke-width="1.5" opacity="0.8"/>
+    <line x1="38" y1="97" x2="44" y2="101" stroke="#1a0000" stroke-width="1.5" opacity="0.8"/>
+    <!-- title -->
+    <text x="38" y="14" text-anchor="middle" font-family="sans-serif" font-size="16" fill="white" font-weight="bold" opacity="0.95">DRIVE</text>
+    <!-- bottom -->
+    <rect y="90" width="76" height="18" fill="rgba(0,0,0,0.7)"/>
+    <text x="38" y="99" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#ffaa66">The Surprising Truth About</text>
+    <text x="38" y="104" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#ffaa66">What Motivates Us</text>
+    <text x="38" y="109" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="white">Daniel H. Pink</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Drive</div>
+    <div class="card-author">Daniel H. Pink</div>
+    <div class="card-meta"><span class="tag cat-motivation">Motivation</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 17. Haystack Syndrome -->
+<div class="card" data-cat="operations" data-title="the haystack syndrome" data-author="eliyahu goldratt">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g17" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a0e00"/><stop offset="100%" stop-color="#3d2200"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g17)"/>
+    <!-- haystack texture - many straw lines -->
+    <ellipse cx="38" cy="68" rx="32" ry="22" fill="#8b6914"/>
+    <line x1="15" y1="72" x2="38" y2="50" stroke="#d4a017" stroke-width="0.8" opacity="0.7"/><line x1="20" y1="78" x2="45" y2="52" stroke="#c8960c" stroke-width="0.7" opacity="0.6"/>
+    <line x1="12" y1="68" x2="35" y2="46" stroke="#e8c547" stroke-width="0.6" opacity="0.5"/><line x1="25" y1="80" x2="55" y2="55" stroke="#d4a017" stroke-width="0.8" opacity="0.7"/>
+    <line x1="30" y1="82" x2="60" y2="60" stroke="#c8960c" stroke-width="0.7" opacity="0.6"/><line x1="40" y1="80" x2="65" y2="58" stroke="#d4a017" stroke-width="0.8" opacity="0.6"/>
+    <line x1="50" y1="75" x2="70" y2="55" stroke="#e8c547" stroke-width="0.6" opacity="0.5"/><line x1="10" y1="62" x2="30" y2="48" stroke="#b8860b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="55" y1="80" x2="72" y2="62" stroke="#c8960c" stroke-width="0.7" opacity="0.6"/><line x1="18" y1="76" x2="42" y2="58" stroke="#d4a017" stroke-width="0.6" opacity="0.5"/>
+    <line x1="35" y1="84" x2="62" y2="62" stroke="#e8c547" stroke-width="0.8" opacity="0.7"/><line x1="8" y1="70" x2="28" y2="54" stroke="#b8860b" stroke-width="0.6" opacity="0.4"/>
+    <!-- needle with glow -->
+    <ellipse cx="38" cy="58" rx="18" ry="10" fill="#ffe066" opacity="0.18"/>
+    <polygon points="37,38 39,38 42,80 34,80" fill="#cccccc" opacity="0.9"/><!-- needle body -->
+    <polygon points="37,38 39,38 38,30" fill="white"/><!-- needle tip -->
+    <!-- needle rays -->
+    <line x1="38" y1="34" x2="28" y2="20" stroke="#ffe066" stroke-width="0.8" opacity="0.5"/><line x1="38" y1="34" x2="48" y2="20" stroke="#ffe066" stroke-width="0.8" opacity="0.5"/><line x1="38" y1="34" x2="22" y2="28" stroke="#ffe066" stroke-width="0.6" opacity="0.4"/><line x1="38" y1="34" x2="54" y2="28" stroke="#ffe066" stroke-width="0.6" opacity="0.4"/>
+    <!-- top parchment band -->
+    <rect y="0" width="76" height="20" fill="#f5e6c8"/>
+    <text x="38" y="9" text-anchor="middle" font-family="serif" font-size="5.5" fill="#3d2200" font-weight="bold">THE HAYSTACK</text>
+    <text x="38" y="17" text-anchor="middle" font-family="serif" font-size="6" fill="#3d2200" font-weight="bold">SYNDROME</text>
+    <!-- bottom -->
+    <rect y="88" width="76" height="20" fill="rgba(0,0,0,0.7)"/>
+    <text x="38" y="98" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#d4a017">Sifting Information Out of</text>
+    <text x="38" y="104" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#d4a017">the Data Ocean</text>
+    <text x="38" y="110" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#eee">Eliyahu M. Goldratt</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Haystack Syndrome</div>
+    <div class="card-author">Eliyahu M. Goldratt</div>
+    <div class="card-meta"><span class="tag cat-operations">Operations</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 18. Know-How -->
+<div class="card" data-cat="leadership" data-title="know how" data-author="ram charan">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g18" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d1f33"/><stop offset="100%" stop-color="#1a3a5c"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g18)"/>
+    <!-- subtle world map grid -->
+    <ellipse cx="38" cy="54" rx="35" ry="25" fill="none" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <ellipse cx="38" cy="54" rx="35" ry="15" fill="none" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <line x1="3" y1="54" x2="73" y2="54" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <line x1="20" y1="30" x2="20" y2="78" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <line x1="38" y1="29" x2="38" y2="79" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <line x1="56" y1="30" x2="56" y2="78" stroke="white" stroke-width="0.3" opacity="0.1"/>
+    <!-- hands -->
+    <path d="M18,78 Q20,65 25,60 Q30,56 32,62 L32,72" stroke="#c68642" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M25,60 Q27,55 30,54 L32,56" stroke="#c68642" stroke-width="2.5" fill="none" stroke-linecap="round"/><!-- finger 1 -->
+    <path d="M58,78 Q56,65 51,60 Q46,56 44,62 L44,72" stroke="#c68642" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M51,60 Q49,55 46,54 L44,56" stroke="#c68642" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- compass in hands -->
+    <circle cx="38" cy="56" r="12" fill="#0d1f33" stroke="#ffd700" stroke-width="1.5"/>
+    <circle cx="38" cy="56" r="9" fill="#0a1828" stroke="#ffd700" stroke-width="0.5"/>
+    <text x="38" y="48" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="white">N</text>
+    <text x="38" y="66" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="white">S</text>
+    <text x="28" y="57" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="white">W</text>
+    <text x="48" y="57" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="white">E</text>
+    <line x1="38" y1="48" x2="38" y2="65" stroke="white" stroke-width="0.4" opacity="0.5"/>
+    <line x1="29" y1="56" x2="47" y2="56" stroke="white" stroke-width="0.4" opacity="0.5"/>
+    <line x1="38" y1="56" x2="45" y2="50" stroke="#cc3333" stroke-width="1.5"/><!-- compass needle red -->
+    <line x1="38" y1="56" x2="31" y2="62" stroke="#aaa" stroke-width="1"/><!-- compass needle gray -->
+    <circle cx="38" cy="56" r="1.5" fill="#ffd700"/>
+    <!-- glow around compass -->
+    <circle cx="38" cy="56" r="14" fill="none" stroke="#ffd700" stroke-width="0.5" opacity="0.3"/>
+    <!-- top -->
+    <rect y="0" width="76" height="20" fill="#0a1228"/>
+    <text x="38" y="9" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#ffd700" letter-spacing="1">RAM CHARAN</text>
+    <text x="38" y="17" text-anchor="middle" font-family="sans-serif" font-size="8" fill="white" font-weight="bold">KNOW-HOW</text>
+    <!-- bottom -->
+    <rect y="87" width="76" height="21" fill="#0a1228"/>
+    <text x="38" y="97" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#7ab5e0">The 8 Skills That Separate</text>
+    <text x="38" y="103" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#7ab5e0">People Who Perform</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Know-How</div>
+    <div class="card-author">Ram Charan</div>
+    <div class="card-meta"><span class="tag cat-leadership">Leadership</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 19. Confidence -->
+<div class="card" data-cat="leadership" data-title="confidence" data-author="rosabeth moss kanter">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g19" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1628"/><stop offset="50%" stop-color="#2a6aaa"/><stop offset="100%" stop-color="#87ceeb"/></linearGradient></defs>
+    <rect width="76" height="108" fill="url(#g19)"/>
+    <!-- clouds -->
+    <ellipse cx="15" cy="78" rx="12" ry="6" fill="white" opacity="0.7"/>
+    <ellipse cx="10" cy="76" rx="8" ry="5" fill="white" opacity="0.6"/>
+    <ellipse cx="22" cy="76" rx="9" ry="5" fill="white" opacity="0.6"/>
+    <ellipse cx="58" cy="82" rx="14" ry="7" fill="white" opacity="0.75"/>
+    <ellipse cx="52" cy="80" rx="9" ry="5" fill="white" opacity="0.65"/>
+    <ellipse cx="66" cy="80" rx="10" ry="5" fill="white" opacity="0.6"/>
+    <ellipse cx="35" cy="88" rx="18" ry="8" fill="white" opacity="0.8"/>
+    <!-- tightrope wire -->
+    <line x1="2" y1="62" x2="74" y2="62" stroke="#2a2a2a" stroke-width="1.2"/>
+    <!-- figure on wire -->
+    <circle cx="38" cy="58" r="3.5" fill="#1a1a1a"/>
+    <line x1="38" y1="61.5" x2="38" y2="70" stroke="#1a1a1a" stroke-width="1.8"/><!-- body -->
+    <line x1="38" y1="64" x2="28" y2="60" stroke="#1a1a1a" stroke-width="1.3"/><!-- left arm out -->
+    <line x1="38" y1="64" x2="48" y2="60" stroke="#1a1a1a" stroke-width="1.3"/><!-- right arm out -->
+    <line x1="38" y1="70" x2="35" y2="75" stroke="#1a1a1a" stroke-width="1.3"/>
+    <line x1="38" y1="70" x2="41" y2="75" stroke="#1a1a1a" stroke-width="1.3"/>
+    <!-- birds V shapes -->
+    <path d="M55,20 Q58,17 61,20" stroke="white" stroke-width="1" fill="none"/><path d="M18,28 Q21,25 24,28" stroke="white" stroke-width="1" fill="none"/><path d="M62,35 Q65,32 68,35" stroke="white" stroke-width="0.8" fill="none"/><path d="M10,38 Q13,35 16,38" stroke="white" stroke-width="0.8" fill="none"/>
+    <!-- sun upper right -->
+    <circle cx="62" cy="18" r="8" fill="#ffe066"/>
+    <line x1="62" y1="6" x2="62" y2="2" stroke="#ffe066" stroke-width="1.2"/><line x1="72" y1="18" x2="76" y2="18" stroke="#ffe066" stroke-width="1.2"/><line x1="70" y1="10" x2="73" y2="7" stroke="#ffe066" stroke-width="1"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="16" fill="rgba(10,22,40,0.8)"/>
+    <text x="38" y="11" text-anchor="middle" font-family="serif" font-size="9" fill="white" font-weight="bold" letter-spacing="1">CONFIDENCE</text>
+    <!-- bottom -->
+    <rect y="90" width="76" height="18" fill="rgba(10,22,40,0.85)"/>
+    <text x="38" y="100" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#7ab5e0">How Winning Streaks &amp; Losing</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="white">Rosabeth Moss Kanter</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Confidence</div>
+    <div class="card-author">Rosabeth Moss Kanter</div>
+    <div class="card-meta"><span class="tag cat-leadership">Leadership</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 20. The 8th Habit -->
+<div class="card" data-cat="leadership" data-title="the 8th habit" data-author="stephen covey">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g20" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#4400aa"/><stop offset="60%" stop-color="#220066"/><stop offset="100%" stop-color="#0d0020"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g20)"/>
+    <!-- 8-pointed star (two overlapping 4-point stars) -->
+    <polygon points="38,16 42,36 58,38 42,40 38,58 34,40 18,38 34,36" fill="#ffd700" opacity="0.9"/>
+    <polygon points="38,18 42,34 56,36 42,38 38,56 34,38 20,36 34,34" fill="#ffd700" opacity="0.7" transform="rotate(45,38,37)"/>
+    <!-- concentric rings -->
+    <circle cx="38" cy="37" r="28" fill="none" stroke="#ffd700" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="38" cy="37" r="22" fill="none" stroke="#ffd700" stroke-width="0.5" opacity="0.4"/>
+    <circle cx="38" cy="37" r="15" fill="none" stroke="#ffd700" stroke-width="0.6" opacity="0.5"/>
+    <!-- central glow -->
+    <circle cx="38" cy="37" r="6" fill="#fffaaa" opacity="0.85"/>
+    <circle cx="38" cy="37" r="3" fill="white"/>
+    <!-- figure at center -->
+    <circle cx="38" cy="35" r="2" fill="#220066"/>
+    <line x1="38" y1="37" x2="38" y2="42" stroke="#220066" stroke-width="1.2"/>
+    <line x1="38" y1="38.5" x2="35" y2="37" stroke="#220066" stroke-width="1"/>
+    <line x1="38" y1="38.5" x2="41" y2="37" stroke="#220066" stroke-width="1"/>
+    <!-- floating dots -->
+    <circle cx="18" cy="18" r="1" fill="#ffd700" opacity="0.6"/><circle cx="60" cy="15" r="1.2" fill="#ffd700" opacity="0.5"/><circle cx="12" cy="55" r="0.8" fill="#cc88ff" opacity="0.6"/><circle cx="65" cy="55" r="1" fill="#cc88ff" opacity="0.5"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="14" fill="rgba(0,0,0,0.6)"/>
+    <text x="38" y="10" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#cc88ff">STEPHEN R. COVEY</text>
+    <!-- big number -->
+    <text x="38" y="80" text-anchor="middle" font-family="serif" font-size="14" fill="#ffd700" font-weight="bold" font-style="italic">8</text>
+    <text x="30" y="73" text-anchor="middle" font-family="serif" font-size="5" fill="white" font-style="italic">th</text>
+    <!-- bottom -->
+    <rect y="86" width="76" height="22" fill="rgba(0,0,0,0.7)"/>
+    <text x="38" y="95" text-anchor="middle" font-family="serif" font-size="7" fill="white" font-weight="bold">HABIT</text>
+    <text x="38" y="103" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#cc88ff">From Effectiveness</text>
+    <text x="38" y="108" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#cc88ff">to Greatness</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The 8th Habit</div>
+    <div class="card-author">Stephen R. Covey</div>
+    <div class="card-meta"><span class="tag cat-leadership">Leadership</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 21. Synchronicity -->
+<div class="card" data-cat="leadership" data-title="synchronicity" data-author="joseph jaworski">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g21" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d0d1a"/><stop offset="50%" stop-color="#2d1b4e"/><stop offset="100%" stop-color="#1a3a5c"/></linearGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g21)"/>
+    <!-- stars -->
+    <circle cx="8" cy="12" r="0.8" fill="white" opacity="0.8"/><circle cx="22" cy="8" r="0.6" fill="white" opacity="0.6"/><circle cx="55" cy="10" r="0.7" fill="white" opacity="0.7"/><circle cx="68" cy="6" r="0.5" fill="white" opacity="0.5"/><circle cx="40" cy="15" r="0.6" fill="white" opacity="0.6"/><circle cx="12" cy="28" r="0.5" fill="white" opacity="0.5"/>
+    <!-- crescent moon -->
+    <circle cx="60" cy="20" r="7" fill="#e8e0cc"/>
+    <circle cx="63" cy="18" r="6" fill="#2d1b4e"/><!-- cutout for crescent -->
+    <!-- two rivers converging -->
+    <path d="M5,30 Q15,40 20,50 Q24,58 30,65 Q35,70 38,72" stroke="#00b894" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85"/>
+    <path d="M5,32 Q14,42 19,52 Q23,60 29,67 Q34,72 38,72" stroke="#00b894" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+    <path d="M71,30 Q61,40 56,50 Q52,58 46,65 Q41,70 38,72" stroke="#f0c040" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85"/>
+    <path d="M71,32 Q62,42 57,52 Q53,60 47,67 Q42,72 38,72" stroke="#f0c040" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+    <!-- merger glow -->
+    <circle cx="38" cy="72" r="8" fill="#ffe066" opacity="0.4"/>
+    <circle cx="38" cy="72" r="4" fill="white" opacity="0.6"/>
+    <!-- ripples below merge -->
+    <ellipse cx="38" cy="80" rx="10" ry="3" fill="none" stroke="#00b894" stroke-width="0.8" opacity="0.5"/>
+    <ellipse cx="38" cy="80" rx="6" ry="2" fill="none" stroke="#f0c040" stroke-width="0.8" opacity="0.5"/>
+    <!-- reeds/grass silhouettes -->
+    <line x1="5" y1="85" x2="8" y2="65" stroke="#1a1a2e" stroke-width="1.5"/><line x1="9" y1="85" x2="11" y2="68" stroke="#1a1a2e" stroke-width="1.2"/><line x1="67" y1="85" x2="68" y2="67" stroke="#1a1a2e" stroke-width="1.5"/><line x1="71" y1="85" x2="70" y2="70" stroke="#1a1a2e" stroke-width="1.2"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="14" fill="rgba(0,0,0,0.5)"/>
+    <text x="38" y="10" text-anchor="middle" font-family="serif" font-size="7" fill="white" font-weight="bold" letter-spacing="1">SYNCHRONICITY</text>
+    <!-- bottom band -->
+    <rect y="86" width="76" height="22" fill="rgba(0,0,20,0.85)"/>
+    <text x="38" y="95" text-anchor="middle" font-family="serif" font-size="4" fill="#f0c040" font-style="italic">The Inner Path of Leadership</text>
+    <text x="38" y="103" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="white">Joseph Jaworski</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Synchronicity</div>
+    <div class="card-author">Joseph Jaworski</div>
+    <div class="card-meta"><span class="tag cat-leadership">Leadership</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 22. Innovate Like Edison -->
+<div class="card" data-cat="innovation" data-title="innovate like edison" data-author="michael gelb sarah caldicott">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g22" cx="50%" cy="55%" r="50%"><stop offset="0%" stop-color="#fffacd"/><stop offset="40%" stop-color="#8b4513"/><stop offset="100%" stop-color="#1a0a00"/></radialGradient>
+      <radialGradient id="g22bulb" cx="50%" cy="45%" r="40%"><stop offset="0%" stop-color="#fffacd" stop-opacity="0.9"/><stop offset="100%" stop-color="#fffacd" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="#1a0a00"/>
+    <rect width="76" height="108" fill="url(#g22)" opacity="0.7"/>
+    <!-- bulb glow -->
+    <ellipse cx="38" cy="46" rx="22" ry="22" fill="url(#g22bulb)"/>
+    <!-- Edison bulb shape -->
+    <path d="M28,50 Q24,40 28,30 Q32,20 38,18 Q44,20 48,30 Q52,40 48,50 Q46,56 44,60 L32,60 Q30,56 28,50Z" fill="none" stroke="#c89020" stroke-width="1.5"/>
+    <path d="M29,51 Q25,41 29,31 Q33,21 38,19 Q43,21 47,31 Q51,41 47,51" fill="#fffacd" opacity="0.15"/>
+    <!-- filament -->
+    <polyline points="33,55 33,48 38,44 43,48 43,40 38,36 33,40 33,35" fill="none" stroke="#ff9900" stroke-width="1.2" stroke-linecap="round"/>
+    <polyline points="33,55 33,48 38,44 43,48 43,40 38,36 33,40 33,35" fill="none" stroke="#ffee88" stroke-width="0.5"/>
+    <!-- base of bulb -->
+    <rect x="33" y="60" width="10" height="3" rx="1" fill="#c89020"/>
+    <rect x="34" y="63" width="8" height="2" fill="#a07010"/>
+    <rect x="34.5" y="65" width="7" height="2" fill="#c89020"/>
+    <rect x="35" y="67" width="6" height="2" fill="#a07010"/>
+    <!-- mini icons inside bulb -->
+    <circle cx="32" cy="40" r="2" fill="none" stroke="#ff9900" stroke-width="0.8"/><!-- gear -->
+    <circle cx="44" cy="38" r="1.5" fill="none" stroke="#ff9900" stroke-width="0.8"/><!-- atom -->
+    <line x1="44" y1="34" x2="44" y2="42" stroke="#ff9900" stroke-width="0.5"/><line x1="40" y1="38" x2="48" y2="38" stroke="#ff9900" stroke-width="0.5"/>
+    <!-- radiating rings -->
+    <circle cx="38" cy="38" r="18" fill="none" stroke="#c89020" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="38" cy="38" r="24" fill="none" stroke="#c89020" stroke-width="0.4" opacity="0.2"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="16" fill="rgba(0,0,0,0.7)"/>
+    <text x="38" y="8" text-anchor="middle" font-family="sans-serif" font-size="5" fill="#c89020" font-weight="bold">INNOVATE LIKE</text>
+    <text x="38" y="14" text-anchor="middle" font-family="serif" font-size="7" fill="white" font-weight="bold">EDISON</text>
+    <!-- bottom -->
+    <rect y="86" width="76" height="22" fill="rgba(0,0,0,0.8)"/>
+    <text x="38" y="96" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#c89020">Gelb &amp; Caldicott</text>
+    <text x="38" y="103" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#888">The Success System of America's</text>
+    <text x="38" y="108" text-anchor="middle" font-family="sans-serif" font-size="3" fill="#888">Greatest Inventor</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Innovate Like Edison</div>
+    <div class="card-author">Michael J. Gelb &amp; Sarah Miller Caldicott</div>
+    <div class="card-meta"><span class="tag cat-innovation">Innovation</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 23. Love Em or Lose Em -->
+<div class="card" data-cat="hr" data-title="love em or lose em" data-author="kaye jordan-evans">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <rect width="38" height="108" fill="#ff8c00"/>
+    <rect x="38" width="38" height="108" fill="#1a1a2e"/>
+    <!-- LEFT side: warm team scene -->
+    <circle cx="12" cy="50" r="4" fill="#ffe066"/><!-- person 1 head -->
+    <line x1="12" y1="54" x2="12" y2="64" stroke="#ffe066" stroke-width="1.5"/>
+    <line x1="12" y1="57" x2="8" y2="54" stroke="#ffe066" stroke-width="1.2"/>
+    <line x1="12" y1="57" x2="16" y2="60" stroke="#ffe066" stroke-width="1.2"/>
+    <circle cx="24" cy="48" r="4" fill="#ffe066"/><!-- person 2 head -->
+    <line x1="24" y1="52" x2="24" y2="62" stroke="#ffe066" stroke-width="1.5"/>
+    <line x1="24" y1="55" x2="20" y2="58" stroke="#ffe066" stroke-width="1.2"/>
+    <line x1="24" y1="55" x2="28" y2="52" stroke="#ffe066" stroke-width="1.2"/>
+    <circle cx="32" cy="52" r="3.5" fill="#ffe066"/>
+    <!-- hearts and stars left -->
+    <path d="M6,38 C6,35 4,33 6,32 C8,31 9,33 10,35 C11,33 12,31 14,32 C16,33 14,35 14,38 L10,42Z" fill="#cc0000" opacity="0.8"/>
+    <circle cx="22" cy="35" r="1.5" fill="#ffee44"/>
+    <circle cx="28" cy="38" r="1.2" fill="#ffee44"/>
+    <!-- RIGHT side: empty chairs -->
+    <rect x="44" y="52" width="8" height="10" rx="1" fill="none" stroke="#555" stroke-width="1"/><!-- chair 1 -->
+    <rect x="44" y="62" width="8" height="2" rx="0.5" fill="#555"/>
+    <rect x="44" y="48" width="8" height="5" rx="1" fill="none" stroke="#555" stroke-width="1"/><!-- back -->
+    <rect x="56" y="52" width="8" height="10" rx="1" fill="none" stroke="#555" stroke-width="1"/><!-- chair 2 -->
+    <rect x="56" y="62" width="8" height="2" rx="0.5" fill="#555"/>
+    <rect x="56" y="48" width="8" height="5" rx="1" fill="none" stroke="#555" stroke-width="1"/>
+    <!-- question marks / darkness right -->
+    <text x="58" y="40" font-family="sans-serif" font-size="8" fill="#444" opacity="0.7">?</text>
+    <text x="46" y="42" font-family="sans-serif" font-size="6" fill="#333" opacity="0.5">?</text>
+    <!-- center divider -->
+    <line x1="38" y1="0" x2="38" y2="108" stroke="#111" stroke-width="1.5"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="20" fill="rgba(0,0,0,0.75)"/>
+    <text x="38" y="9" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#ff8c00" font-weight="bold">LOVE 'EM</text>
+    <text x="38" y="17" text-anchor="middle" font-family="sans-serif" font-size="6" fill="white" font-weight="bold">OR LOSE 'EM</text>
+    <!-- bottom -->
+    <rect y="84" width="76" height="24" fill="rgba(0,0,0,0.8)"/>
+    <text x="38" y="93" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#aaa">Getting Good People to Stay</text>
+    <text x="38" y="100" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="#ff8c00">Kaye &amp; Jordan-Evans</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#666">Third Edition</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Love 'Em or Lose 'Em</div>
+    <div class="card-author">Kaye &amp; Jordan-Evans</div>
+    <div class="card-meta"><span class="tag cat-hr">HR</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 24. Making Things Move -->
+<div class="card" data-cat="other" data-title="making things move" data-author="dustyn roberts">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <rect width="76" height="108" fill="#0a1f44"/>
+    <!-- blueprint grid -->
+    <line x1="0" y1="10" x2="76" y2="10" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="20" x2="76" y2="20" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="30" x2="76" y2="30" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="40" x2="76" y2="40" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="50" x2="76" y2="50" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="60" x2="76" y2="60" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="70" x2="76" y2="70" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="80" x2="76" y2="80" stroke="white" stroke-width="0.3" opacity="0.2"/>
+    <line x1="10" y1="0" x2="10" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="20" y1="0" x2="20" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="30" y1="0" x2="30" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="40" y1="0" x2="40" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="50" y1="0" x2="50" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="60" y1="0" x2="60" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/><line x1="70" y1="0" x2="70" y2="108" stroke="white" stroke-width="0.3" opacity="0.2"/>
+    <!-- gear 1 (big) -->
+    <circle cx="30" cy="52" r="14" fill="none" stroke="#ffd700" stroke-width="1.5"/>
+    <circle cx="30" cy="52" r="5" fill="none" stroke="#ffd700" stroke-width="1"/>
+    <rect x="27" y="36" width="6" height="4" rx="1" fill="#ffd700"/><rect x="27" y="64" width="6" height="4" rx="1" fill="#ffd700"/>
+    <rect x="14" y="49" width="4" height="6" rx="1" fill="#ffd700"/><rect x="44" y="49" width="4" height="6" rx="1" fill="#ffd700"/>
+    <rect x="17" y="39" width="4" height="5" rx="1" fill="#ffd700" transform="rotate(-45,19,41)"/>
+    <rect x="39" y="39" width="4" height="5" rx="1" fill="#ffd700" transform="rotate(45,41,41)"/>
+    <rect x="17" y="58" width="4" height="5" rx="1" fill="#ffd700" transform="rotate(45,19,60)"/>
+    <rect x="39" y="58" width="4" height="5" rx="1" fill="#ffd700" transform="rotate(-45,41,60)"/>
+    <!-- gear 2 (small, meshing) -->
+    <circle cx="52" cy="38" r="9" fill="none" stroke="#7ab5e0" stroke-width="1.2"/>
+    <circle cx="52" cy="38" r="3" fill="none" stroke="#7ab5e0" stroke-width="0.8"/>
+    <rect x="49.5" y="27" width="5" height="3" rx="1" fill="#7ab5e0"/><rect x="49.5" y="46" width="5" height="3" rx="1" fill="#7ab5e0"/>
+    <rect x="41" y="35.5" width="3" height="5" rx="1" fill="#7ab5e0"/><rect x="60" y="35.5" width="3" height="5" rx="1" fill="#7ab5e0"/>
+    <!-- motion arc -->
+    <path d="M44,36 Q40,52 44,68" stroke="#ffd700" stroke-width="1" fill="none" stroke-dasharray="2,2" opacity="0.7"/>
+    <polygon points="44,68 41,65 47,65" fill="#ffd700"/>
+    <!-- dimension lines -->
+    <line x1="15" y1="72" x2="45" y2="72" stroke="white" stroke-width="0.5" opacity="0.5"/>
+    <line x1="15" y1="70" x2="15" y2="74" stroke="white" stroke-width="0.5" opacity="0.5"/>
+    <line x1="45" y1="70" x2="45" y2="74" stroke="white" stroke-width="0.5" opacity="0.5"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="18" fill="#071530"/>
+    <text x="38" y="8" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="white" font-weight="bold">MAKING THINGS</text>
+    <text x="38" y="15" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#ffd700" font-weight="bold">MOVE</text>
+    <!-- bottom -->
+    <rect y="84" width="76" height="24" fill="#071530"/>
+    <text x="38" y="93" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#7ab5e0">DIY Mechanisms for Inventors,</text>
+    <text x="38" y="99" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#7ab5e0">Hobbyists, and Artists</text>
+    <text x="38" y="106" text-anchor="middle" font-family="sans-serif" font-size="3.8" fill="white">Dustyn Roberts</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">Making Things Move</div>
+    <div class="card-author">Dustyn Roberts</div>
+    <div class="card-meta"><span class="tag cat-other">Engineering</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- 25. Universe in a Nutshell -->
+<div class="card" data-cat="science" data-title="the universe in a nutshell" data-author="stephen hawking">
+  <div class="cover-wrap"><svg viewBox="0 0 76 108" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g25" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#050520"/><stop offset="100%" stop-color="#000005"/></radialGradient>
+      <radialGradient id="g25gal" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="white"/><stop offset="30%" stop-color="#fffacd"/><stop offset="70%" stop-color="#9b59b6" stop-opacity="0.6"/><stop offset="100%" stop-color="#3498db" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="76" height="108" fill="url(#g25)"/>
+    <!-- star field -->
+    <circle cx="5" cy="8" r="0.8" fill="white" opacity="0.9"/><circle cx="15" cy="4" r="0.5" fill="white" opacity="0.7"/><circle cx="28" cy="9" r="0.7" fill="white" opacity="0.8"/><circle cx="45" cy="5" r="0.4" fill="white" opacity="0.6"/><circle cx="60" cy="11" r="0.8" fill="#aaccff" opacity="0.8"/><circle cx="70" cy="6" r="0.5" fill="white" opacity="0.7"/><circle cx="8" cy="22" r="0.6" fill="white" opacity="0.6"/><circle cx="68" cy="25" r="0.7" fill="white" opacity="0.5"/><circle cx="72" cy="15" r="0.4" fill="#aaccff" opacity="0.7"/><circle cx="55" cy="18" r="0.5" fill="white" opacity="0.5"/><circle cx="20" cy="20" r="0.4" fill="white" opacity="0.4"/>
+    <!-- walnut halves -->
+    <ellipse cx="38" cy="68" rx="20" ry="13" fill="#6b3c11"/>
+    <path d="M18,68 Q20,60 26,56 Q32,52 38,52 Q44,52 50,56 Q56,60 58,68" fill="#8b5e2a"/>
+    <!-- walnut texture lines -->
+    <path d="M22,64 Q28,58 38,56 Q48,58 54,64" stroke="#5c2a00" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M20,68 Q24,62 38,60 Q52,62 56,68" stroke="#5c2a00" stroke-width="0.6" fill="none" opacity="0.5"/>
+    <!-- crack opening -->
+    <path d="M18,68 L38,52 L58,68" stroke="#ffe066" stroke-width="1.5" fill="none"/>
+    <!-- cosmos inside the crack -->
+    <ellipse cx="38" cy="58" rx="14" ry="9" fill="#050520" opacity="0.95"/>
+    <ellipse cx="38" cy="58" rx="12" ry="7" fill="url(#g25gal)"/>
+    <!-- spiral galaxy arms -->
+    <path d="M38,58 Q42,54 46,56 Q50,58 48,62 Q44,66 38,64 Q32,62 30,58 Q32,54 38,58Z" fill="#9b59b6" opacity="0.4"/>
+    <circle cx="38" cy="58" r="2.5" fill="white" opacity="0.9"/>
+    <!-- tiny stars in cosmos -->
+    <circle cx="32" cy="55" r="0.5" fill="white" opacity="0.8"/><circle cx="44" cy="54" r="0.4" fill="white" opacity="0.7"/><circle cx="36" cy="62" r="0.4" fill="#aaccff" opacity="0.8"/><circle cx="42" cy="60" r="0.3" fill="white" opacity="0.6"/>
+    <!-- light explosion from crack -->
+    <line x1="38" y1="52" x2="25" y2="38" stroke="#ffe066" stroke-width="0.8" opacity="0.4"/><line x1="38" y1="52" x2="38" y2="35" stroke="#ffe066" stroke-width="0.8" opacity="0.5"/><line x1="38" y1="52" x2="51" y2="38" stroke="#ffe066" stroke-width="0.8" opacity="0.4"/>
+    <!-- milky way streak background -->
+    <ellipse cx="20" cy="30" rx="15" ry="5" fill="white" opacity="0.04" transform="rotate(-30,20,30)"/>
+    <!-- top band -->
+    <rect y="0" width="76" height="16" fill="rgba(0,0,10,0.8)"/>
+    <text x="38" y="7" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="white" font-weight="bold">THE UNIVERSE</text>
+    <text x="38" y="13" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#aaccff" font-weight="bold">IN A NUTSHELL</text>
+    <!-- bottom -->
+    <rect y="83" width="76" height="25" fill="rgba(0,0,10,0.9)"/>
+    <text x="38" y="93" text-anchor="middle" font-family="sans-serif" font-size="5.5" fill="#ffd700" font-weight="bold">STEPHEN HAWKING</text>
+    <text x="38" y="101" text-anchor="middle" font-family="sans-serif" font-size="3.2" fill="#666">Bantam Books</text>
+  </svg></div>
+  <div class="card-body">
+    <div class="card-title">The Universe in a Nutshell</div>
+    <div class="card-author">Stephen Hawking</div>
+    <div class="card-meta"><span class="tag cat-science">Science</span><span class="shelf-tag">Shelf 2</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+    <div class="no-results" id="no-results">No books match your search.</div>
+  </div><!-- end grid -->
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#2255aa"></div>Leadership</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9a5e00"></div>Strategy</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a7a4e"></div>Innovation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a5580"></div>Motivation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7a2a7a"></div>Biography</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b54a00"></div>Finance</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3a6b00"></div>Science</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b52020"></div>Operations</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5a2aa0"></div>HR</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#999"></div>Other</div>
+  </div>
+</main>
+
+<script>
+let activeFilter = 'all';
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterBooks();
+}
+function filterBooks() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.card[data-cat]');
+  let visible = 0;
+  cards.forEach(card => {
+    const ok = (activeFilter === 'all' || card.dataset.cat === activeFilter) &&
+               (!q || card.dataset.title.includes(q) || card.dataset.author.includes(q));
+    card.classList.toggle('hidden', !ok);
+    if (ok) visible++;
+  });
+  document.getElementById('result-count').textContent = visible + ' of ' + cards.length + ' titles';
+  document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+}
+filterBooks();
+</script>
+</body>
+</html>
