@@ -16,251 +16,87 @@
     --card-bg: #ffffff;
     --shadow: 0 2px 12px rgba(26,26,46,0.10);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
   header {
-    background: var(--ink);
-    padding: 48px 40px 36px;
-    position: relative;
-    overflow: hidden;
+    background: var(--ink); padding: 48px 40px 36px; position: relative; overflow: hidden;
   }
   header::before {
-    content: '📚';
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 96px;
-    opacity: 0.08;
+    content: '📚'; position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+    font-size: 96px; opacity: 0.08;
   }
   .header-eyebrow {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px;
   }
   header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
-    color: #fff;
-    line-height: 1.1;
-    margin-bottom: 12px;
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 12px;
   }
-  header p {
-    color: #aaa;
-    font-size: 14px;
-    font-weight: 300;
-    max-width: 500px;
-  }
+  header p { color: #aaa; font-size: 14px; font-weight: 300; max-width: 500px; }
 
-  /* TOOLBAR */
   .toolbar {
-    background: var(--aged);
-    border-bottom: 1px solid #d4c9b8;
-    padding: 16px 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: var(--aged); border-bottom: 1px solid #d4c9b8; padding: 16px 40px;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
   }
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-    max-width: 360px;
-  }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 360px; }
   .search-wrap input {
-    width: 100%;
-    padding: 9px 14px 9px 36px;
-    border: 1px solid #c4b99e;
-    border-radius: 4px;
-    background: #fff;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    color: var(--ink);
-    outline: none;
+    width: 100%; padding: 9px 14px 9px 36px; border: 1px solid #c4b99e; border-radius: 4px;
+    background: #fff; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink); outline: none;
   }
   .search-wrap input:focus { border-color: var(--accent); }
   .search-wrap::before {
-    content: '⌕';
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: var(--muted);
+    content: '⌕'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    font-size: 16px; color: var(--muted);
   }
-
-  .filter-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .filter-label { font-size: 12px; font-weight: 500; color: var(--muted); }
   .filter-btn {
-    padding: 6px 14px;
-    border: 1px solid #c4b99e;
-    border-radius: 20px;
-    background: transparent;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
+    padding: 5px 12px; border: 1px solid #c4b99e; border-radius: 20px; background: transparent;
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; color: var(--muted);
+    cursor: pointer; transition: all 0.15s;
   }
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--ink);
-    color: #fff;
-    border-color: var(--ink);
-  }
-
-  .book-count {
-    font-size: 12px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
+  .filter-btn:hover, .filter-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .book-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
   .book-count span { font-weight: 600; color: var(--ink); }
 
-  /* GRID */
   .grid-wrap { padding: 32px 40px 60px; }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
 
-  /* CARD */
   .card {
-    background: var(--card-bg);
-    border-radius: 4px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    border-left: 4px solid transparent;
+    background: var(--card-bg); border-radius: 4px; box-shadow: var(--shadow); overflow: hidden;
+    display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer; border-left: 4px solid transparent;
   }
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(26,26,46,0.14);
-    border-left-color: var(--accent);
-  }
-
-  .card-spine {
-    height: 7px;
-  }
-
-  .card-body { padding: 18px 18px 14px; flex: 1; display: flex; flex-direction: column; }
-  .card-category {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.35;
-    color: var(--ink);
-    margin-bottom: 6px;
-  }
-  .card-author {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 400;
-    margin-bottom: 12px;
-  }
-  .card-desc {
-    font-size: 12px;
-    color: #5a5048;
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  .card-footer {
-    padding: 10px 18px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .status-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 20px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(26,26,46,0.14); border-left-color: var(--accent); }
+  .card-spine { height: 6px; }
+  .card-body { padding: 16px 16px 12px; flex: 1; display: flex; flex-direction: column; }
+  .card-category { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--ink); margin-bottom: 5px; }
+  .card-author { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .card-desc { font-size: 11px; color: #5a5048; line-height: 1.55; flex: 1; }
+  .card-footer { padding: 8px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .status-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
   .status-available { background: #e8f5e9; color: #2e7d32; }
   .status-reading   { background: #fff8e1; color: #f57f17; }
   .status-lent      { background: #fce4ec; color: #c62828; }
 
-  /* EMPTY */
-  .empty { display: none; text-align: center; padding: 80px 20px; grid-column: 1/-1; }
-  .empty p { color: var(--muted); font-size: 15px; }
-
-  /* MODAL OVERLAY */
   .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(26,26,46,0.55);
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    display: none; position: fixed; inset: 0; background: rgba(26,26,46,0.55);
+    z-index: 999; align-items: center; justify-content: center; padding: 20px;
   }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: #fff;
-    border-radius: 6px;
-    max-width: 520px;
-    width: 100%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    overflow: hidden;
-  }
-  .modal-header {
-    padding: 24px 24px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .modal-header-left {}
-  .modal-category-label {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
-  }
-  .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px; font-weight: 700; line-height: 1.25; color: var(--ink);
-  }
-  .modal-close {
-    background: none; border: none; cursor: pointer;
-    font-size: 20px; color: var(--muted); flex-shrink: 0; padding: 2px;
-  }
+  .modal { background: #fff; border-radius: 6px; max-width: 520px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+  .modal-header { padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .modal-category-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1.25; color: var(--ink); }
+  .modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--muted); flex-shrink: 0; padding: 2px; }
   .modal-body { padding: 16px 24px 24px; }
   .modal-author { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
   .modal-desc { font-size: 13px; color: #3a3028; line-height: 1.7; margin-bottom: 18px; }
   .modal-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
   .status-select {
     padding: 6px 12px; border: 1px solid #d4c9b8; border-radius: 4px;
     font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
@@ -280,7 +116,7 @@
 <header>
   <div class="header-eyebrow">Personal Collection</div>
   <h1>My Library</h1>
-  <p>A curated collection of books on business, leadership, innovation, and ideas.</p>
+  <p>A curated collection spanning leadership, strategy, innovation, biography, philosophy, and more.</p>
 </header>
 
 <div class="toolbar">
@@ -294,17 +130,21 @@
     <button class="filter-btn" onclick="setFilter('Business Strategy', this)">Strategy</button>
     <button class="filter-btn" onclick="setFilter('Innovation', this)">Innovation</button>
     <button class="filter-btn" onclick="setFilter('Personal Finance', this)">Finance</button>
+    <button class="filter-btn" onclick="setFilter('Biography', this)">Biography</button>
+    <button class="filter-btn" onclick="setFilter('Self-Help', this)">Self-Help</button>
+    <button class="filter-btn" onclick="setFilter('Spirituality', this)">Spirituality</button>
     <button class="filter-btn" onclick="setFilter('Science & Tech', this)">Science & Tech</button>
+    <button class="filter-btn" onclick="setFilter('Fiction', this)">Fiction</button>
+    <button class="filter-btn" onclick="setFilter('India', this)">India</button>
     <button class="filter-btn" onclick="setFilter('Other', this)">Other</button>
   </div>
-  <div class="book-count">Showing <span id="visibleCount">25</span> of <span id="totalCount">25</span> books</div>
+  <div class="book-count">Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span> books</div>
 </div>
 
 <div class="grid-wrap">
   <div class="grid" id="bookGrid"></div>
 </div>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modalBox">
     <div class="modal-header">
@@ -330,214 +170,268 @@ const CATEGORY_COLORS = {
   'Business Strategy':'#16a085',
   'Innovation':       '#8e44ad',
   'Personal Finance': '#d35400',
-  'Science & Tech':   '#27ae60',
   'Biography':        '#c0392b',
+  'Self-Help':        '#e67e22',
+  'Spirituality':     '#6c3483',
+  'Science & Tech':   '#27ae60',
+  'Fiction':          '#2c3e50',
+  'India':            '#f39c12',
   'Other':            '#7f8c8d',
 };
 
 const BOOKS = [
-  {
-    title: "The Three Laws of Performance",
-    author: "Steve Zaffron & Dave Logan",
-    category: "Leadership",
-    desc: "Reveals how language shapes performance in organizations and how leaders can rewrite the future by changing the stories people tell about their situation.",
-    status: "Available"
-  },
-  {
-    title: "Liberty and Tyranny",
-    author: "Mark R. Levin",
-    category: "Other",
-    desc: "A conservative manifesto arguing for constitutional limits on government and individual liberty against the encroachment of statist ideology.",
-    status: "Available"
-  },
-  {
-    title: "The Leadership Challenge",
-    author: "Kouzes & Posner",
-    category: "Leadership",
-    desc: "A research-backed framework of the Five Practices of Exemplary Leadership, drawn from thousands of interviews with leaders around the world. (4th Edition)",
-    status: "Available"
-  },
-  {
-    title: "Jugaad Innovation",
-    author: "Navi Radjou, Jaideep Prabhu & Simone Ahuja",
-    category: "Innovation",
-    desc: "Explores the Indian concept of frugal, flexible innovation and how Western companies can embrace this disruptive approach to do more with less.",
-    status: "Available"
-  },
-  {
-    title: "Why Can't We Get Anything Done Around Here?",
-    author: "Lefton & Loeb",
-    category: "Business Strategy",
-    desc: "Diagnoses organizational dysfunction and provides tools to break through bureaucratic barriers to execution and results.",
-    status: "Available"
-  },
-  {
-    title: "The Ultimate Gift",
-    author: "Jim Stovall",
-    category: "Other",
-    desc: "A parable about a spoiled young man who must learn twelve life lessons in order to receive his inheritance — a transformative story about the true gifts of life.",
-    status: "Available"
-  },
-  {
-    title: "Retire Young Retire Rich",
-    author: "Robert T. Kiyosaki",
-    category: "Personal Finance",
-    desc: "Kiyosaki's guide to accelerating the path to financial independence through leveraging assets, mindset, and the lessons of Rich Dad.",
-    status: "Available"
-  },
-  {
-    title: "...A Mother's Heart?",
-    author: "Arun Shourie",
-    category: "Other",
-    desc: "A deeply personal account by journalist and politician Arun Shourie about raising a child with cerebral palsy, touching on faith, family, and the human spirit.",
-    status: "Available"
-  },
-  {
-    title: "The Toyota Way",
-    author: "Jeffrey Liker",
-    category: "Business Strategy",
-    desc: "Documents the 14 management principles behind Toyota's renowned production system and its philosophy of continuous improvement (kaizen).",
-    status: "Available"
-  },
-  {
-    title: "If It Ain't Broke… Break It!",
-    author: "Robert J. Kriegel & Louis Patler",
-    category: "Innovation",
-    desc: "Challenges the 'if it ain't broke, don't fix it' mindset and urges leaders to disrupt their own success before competitors do it for them.",
-    status: "Available"
-  },
-  {
-    title: "Elon Musk",
-    author: "Ashlee Vance",
-    category: "Biography",
-    desc: "The definitive biography of the entrepreneur behind Tesla, SpaceX, and PayPal — charting his relentless drive to transform multiple industries.",
-    status: "Available"
-  },
-  {
-    title: "The Dance of Molecules",
-    author: "Ted Sargent",
-    category: "Science & Tech",
-    desc: "A vivid exploration of nanotechnology and how the manipulation of matter at the molecular scale is set to revolutionize medicine, energy, and everyday life.",
-    status: "Available"
-  },
-  {
-    title: "Corporate Combat",
-    author: "Nick Skellon",
-    category: "Business Strategy",
-    desc: "Applies Sun Tzu's Art of War and military strategy principles to modern corporate competition and business warfare.",
-    status: "Available"
-  },
-  {
-    title: "The Balanced Scorecard",
-    author: "Robert S. Kaplan & David P. Norton",
-    category: "Business Strategy",
-    desc: "The seminal work on translating strategy into action using a four-perspective framework: financial, customer, internal processes, and learning & growth.",
-    status: "Available"
-  },
-  {
-    title: "Build, Borrow, or Buy",
-    author: "Laurence Capron & Will Mitchell",
-    category: "Business Strategy",
-    desc: "A strategic framework for deciding whether to develop capabilities internally, form alliances, or acquire them through M&A — with a practical decision roadmap.",
-    status: "Available"
-  },
-  {
-    title: "Drive",
-    author: "Daniel H. Pink",
-    category: "Leadership",
-    desc: "Overturns conventional wisdom about motivation to reveal that autonomy, mastery, and purpose — not rewards and punishments — drive peak performance.",
-    status: "Available"
-  },
-  {
-    title: "The Haystack Syndrome",
-    author: "Eliyahu M. Goldratt",
-    category: "Business Strategy",
-    desc: "Goldratt argues that most companies drown in data but starve for information, and shows how the Theory of Constraints cuts through the noise.",
-    status: "Available"
-  },
-  {
-    title: "Know-How",
-    author: "Ram Charan",
-    category: "Leadership",
-    desc: "Identifies eight essential skills — from positioning your business to managing the social system — that distinguish truly effective leaders.",
-    status: "Available"
-  },
-  {
-    title: "Confidence",
-    author: "Rosabeth Moss Kanter",
-    category: "Leadership",
-    desc: "Examines why winning streaks and losing streaks persist in sports and business, and how leaders can build the culture of confidence that reverses decline.",
-    status: "Available"
-  },
-  {
-    title: "The 8th Habit",
-    author: "Stephen R. Covey",
-    category: "Leadership",
-    desc: "Covey's sequel to The 7 Habits, arguing that finding your voice and inspiring others to find theirs is the defining challenge of the new knowledge-worker age.",
-    status: "Available"
-  },
-  {
-    title: "Synchronicity: The Inner Path of Leadership",
-    author: "Joseph Jaworski",
-    category: "Leadership",
-    desc: "A profound memoir-meets-philosophy exploring how deep listening, presence, and commitment unlock leadership that transforms organizations and societies.",
-    status: "Available"
-  },
-  {
-    title: "Innovate Like Edison",
-    author: "Michael J. Gelb & Sarah Miller Caldicott",
-    category: "Innovation",
-    desc: "Distills Edison's five competencies for innovation — solution-centered mindset, kaleidoscopic thinking, full-spectrum engagement, master-mind collaboration, and super-value creation.",
-    status: "Available"
-  },
-  {
-    title: "Love 'Em or Lose 'Em",
-    author: "Beverly Kaye & Sharon Jordan-Evans",
-    category: "Leadership",
-    desc: "A practical guide for managers on the 26 strategies — A to Z — for retaining talented employees in a competitive talent market. (3rd Edition)",
-    status: "Available"
-  },
-  {
-    title: "Making Things Move",
-    author: "Dustyn Roberts",
-    category: "Science & Tech",
-    desc: "A hands-on guide to DIY mechanisms, motors, and motion systems for inventors, hobbyists, and artists, bridging engineering concepts with creative making.",
-    status: "Available"
-  },
-  {
-    title: "The Universe in a Nutshell",
-    author: "Stephen Hawking",
-    category: "Science & Tech",
-    desc: "Hawking's illustrated journey through the frontiers of physics — from quantum mechanics and p-branes to superstring theory and the nature of time.",
-    status: "Available"
-  }
+  // ── BATCH 1 (original 25) ───────────────────────────────────────────────
+  { title:"The Three Laws of Performance", author:"Steve Zaffron & Dave Logan", category:"Leadership", desc:"Reveals how language shapes performance in organizations and how leaders can rewrite the future by changing the stories people live by." },
+  { title:"Liberty and Tyranny", author:"Mark R. Levin", category:"Other", desc:"A conservative manifesto arguing for constitutional limits on government and individual liberty against the encroachment of statist ideology." },
+  { title:"The Leadership Challenge", author:"Kouzes & Posner", category:"Leadership", desc:"Research-backed framework of the Five Practices of Exemplary Leadership, drawn from thousands of interviews worldwide. (4th Edition)" },
+  { title:"Jugaad Innovation", author:"Navi Radjou, Jaideep Prabhu & Simone Ahuja", category:"Innovation", desc:"Explores the Indian concept of frugal, flexible innovation and how Western companies can embrace this disruptive approach to do more with less." },
+  { title:"Why Can't We Get Anything Done Around Here?", author:"Lefton & Loeb", category:"Business Strategy", desc:"Diagnoses organizational dysfunction and provides tools to break through bureaucratic barriers to execution." },
+  { title:"The Ultimate Gift", author:"Jim Stovall", category:"Self-Help", desc:"A parable about a spoiled young man who must learn twelve life lessons to receive his inheritance — a story about the true gifts of life." },
+  { title:"Retire Young Retire Rich", author:"Robert T. Kiyosaki", category:"Personal Finance", desc:"Kiyosaki's guide to accelerating the path to financial independence through leveraging assets and the lessons of Rich Dad." },
+  { title:"...A Mother's Heart?", author:"Arun Shourie", category:"Other", desc:"A personal account by journalist Arun Shourie about raising a child with cerebral palsy, touching on faith, family, and the human spirit." },
+  { title:"The Toyota Way", author:"Jeffrey Liker", category:"Business Strategy", desc:"Documents the 14 management principles behind Toyota's renowned production system and its philosophy of continuous improvement (kaizen)." },
+  { title:"If It Ain't Broke… Break It!", author:"Robert J. Kriegel & Louis Patler", category:"Innovation", desc:"Challenges the 'if it ain't broke' mindset and urges leaders to disrupt their own success before competitors do it for them." },
+  { title:"Elon Musk", author:"Ashlee Vance", category:"Biography", desc:"The definitive biography of the entrepreneur behind Tesla, SpaceX, and PayPal — charting his relentless drive to transform industries." },
+  { title:"The Dance of Molecules", author:"Ted Sargent", category:"Science & Tech", desc:"A vivid exploration of nanotechnology and how the manipulation of matter at the molecular scale will revolutionize medicine, energy, and everyday life." },
+  { title:"Corporate Combat", author:"Nick Skellon", category:"Business Strategy", desc:"Applies Sun Tzu's Art of War and military strategy principles to modern corporate competition." },
+  { title:"The Balanced Scorecard", author:"Robert S. Kaplan & David P. Norton", category:"Business Strategy", desc:"The seminal work on translating strategy into action using a four-perspective framework: financial, customer, internal processes, and learning & growth." },
+  { title:"Build, Borrow, or Buy", author:"Laurence Capron & Will Mitchell", category:"Business Strategy", desc:"A strategic framework for deciding whether to develop capabilities internally, form alliances, or acquire them through M&A." },
+  { title:"Drive", author:"Daniel H. Pink", category:"Leadership", desc:"Overturns conventional wisdom to reveal that autonomy, mastery, and purpose — not rewards and punishments — drive peak performance." },
+  { title:"The Haystack Syndrome", author:"Eliyahu M. Goldratt", category:"Business Strategy", desc:"Goldratt argues most companies drown in data but starve for information, showing how the Theory of Constraints cuts through the noise." },
+  { title:"Know-How", author:"Ram Charan", category:"Leadership", desc:"Identifies eight essential skills that distinguish truly effective leaders, from positioning your business to managing the social system." },
+  { title:"Confidence", author:"Rosabeth Moss Kanter", category:"Leadership", desc:"Examines why winning and losing streaks persist in sports and business, and how leaders build a culture of confidence." },
+  { title:"The 8th Habit", author:"Stephen R. Covey", category:"Leadership", desc:"Covey's sequel to The 7 Habits — finding your voice and inspiring others to find theirs in the knowledge-worker age." },
+  { title:"Synchronicity: The Inner Path of Leadership", author:"Joseph Jaworski", category:"Leadership", desc:"A memoir-meets-philosophy exploring how deep listening and presence unlock leadership that transforms organizations." },
+  { title:"Innovate Like Edison", author:"Michael J. Gelb & Sarah Miller Caldicott", category:"Innovation", desc:"Distils Edison's five competencies: solution-centered mindset, kaleidoscopic thinking, full-spectrum engagement, mastermind collaboration, and super-value creation." },
+  { title:"Love 'Em or Lose 'Em", author:"Beverly Kaye & Sharon Jordan-Evans", category:"Leadership", desc:"A practical A-to-Z guide for managers on 26 strategies for retaining talented employees. (3rd Edition)" },
+  { title:"Making Things Move", author:"Dustyn Roberts", category:"Science & Tech", desc:"A hands-on guide to DIY mechanisms and motion systems for inventors, hobbyists, and artists." },
+  { title:"The Universe in a Nutshell", author:"Stephen Hawking", category:"Science & Tech", desc:"Hawking's illustrated journey through quantum mechanics, superstring theory, p-branes, and the nature of time." },
+
+  // ── BATCH 2 ─────────────────────────────────────────────────────────────
+  // Shelf 1 left stack
+  { title:"Indomitable Spirit", author:"APJ Abdul Kalam", category:"India", desc:"A collection of Kalam's speeches and conversations conveying his vision, optimism, and deep commitment to India's youth and future." },
+  { title:"Wings of Fire", author:"APJ Abdul Kalam with Arun Tiwari", category:"Biography", desc:"The inspiring autobiography of India's 'Missile Man' and former President, tracing his journey from humble origins to the pinnacle of science and statecraft." },
+  { title:"Originals", author:"Adam Grant", category:"Innovation", desc:"How non-conformists move the world — Grant explores how to recognize and champion new ideas while navigating doubt and opposition." },
+  { title:"The Fortune at the Bottom of the Pyramid", author:"C.K. Prahalad", category:"Business Strategy", desc:"The landmark argument that the world's four billion poorest people represent an immense untapped market and that doing business there can eliminate poverty." },
+  { title:"For the Love of Physics", author:"Walter Lewin", category:"Science & Tech", desc:"MIT's legendary physics professor takes readers on a journey from the end of a rainbow to the edge of time, making science vivid and personal." },
+  { title:"Rebooting India", author:"Nandan Nilekani & Viral Shah", category:"India", desc:"How India can use technology — especially digital infrastructure — to transform governance, deliver services, and become a global leader." },
+  { title:"Leadership Games", author:"Kaagan", category:"Leadership", desc:"An activity-based guide to building leadership capacity in organizations through experiential learning and collaborative games." },
+  { title:"Coaching for Leadership", author:"Goldsmith, Lyons & Freas", category:"Leadership", desc:"A definitive anthology on the art and practice of executive coaching, featuring contributions from the world's leading practitioners." },
+  { title:"Understanding Chess Move by Move", author:"John Nunn", category:"Other", desc:"A masterclass in chess thinking, guiding club players through grandmaster games move by annotated move." },
+  { title:"Why Do I Love These People?", author:"Po Bronson", category:"Self-Help", desc:"True stories of people who rebuilt family against all odds — a meditation on what family really means in the modern world." },
+  { title:"World Atlas", author:"(Various)", category:"Other", desc:"A comprehensive reference atlas of world geography, countries, and topography." },
+  // Shelf 1 right stack
+  { title:"The Mental Edge", author:"Kenneth Baum", category:"Self-Help", desc:"How to maximize sports potential with the mind-body connection — tools for peak performance under pressure." },
+  { title:"The Holiness: The Dalai Lama", author:"Dalai Lama", category:"Spirituality", desc:"A collection of teachings from His Holiness on awakening the mind and lightening the heart toward compassion and inner peace." },
+  { title:"Katha Chanakya", author:"Radhakrishnan Pillai", category:"India", desc:"Stories from ancient Indian statesman Chanakya's wisdom, made accessible for the modern reader navigating life and leadership." },
+  { title:"Mojo", author:"Marshall Goldsmith", category:"Leadership", desc:"How to get it, how to keep it, and how to recover it when you lose it — Goldsmith's guide to the positive spirit that starts from the inside out." },
+  { title:"Fooled by Randomness", author:"Nassim Nicholas Taleb", category:"Business Strategy", desc:"Taleb's provocative argument that luck plays a far greater role in life and markets than we acknowledge, and how to think more clearly about uncertainty." },
+  { title:"Management Thoughts", author:"Promod Batra (ed.)", category:"Business Strategy", desc:"A curated collection of management wisdom from global thinkers, distilled for the practising leader." },
+  { title:"Turning Points", author:"APJ Abdul Kalam", category:"India", desc:"Kalam reflects on the transformative moments in his life and career, and the decisions that shaped both his destiny and India's." },
+  { title:"The Law of Success", author:"Napoleon Hill", category:"Self-Help", desc:"Hill's original masterwork — sixteen lessons on the philosophy of achievement that later became the foundation of Think and Grow Rich." },
+  { title:"Ivanhoe", author:"Sir Walter Scott", category:"Fiction", desc:"The classic medieval romance set in 12th-century England, following the Saxon knight Ivanhoe's quest for honour, love, and justice." },
+  { title:"Lateral Thinking", author:"Edward de Bono", category:"Innovation", desc:"De Bono's foundational guide to thinking sideways — using creative, indirect approaches to solving problems that vertical logic cannot unlock." },
+  { title:"The Monk and the Riddle", author:"Randy Komisar", category:"Leadership", desc:"A business fable exploring the tension between passion and pragmatism, asking whether you should pursue work that truly matters before it's too late." },
+  { title:"India 2020", author:"APJ Abdul Kalam & Y.S. Rajan", category:"India", desc:"A bold vision for transforming India into a developed nation by 2020, with a roadmap across agriculture, education, and technology sectors." },
+  { title:"Tearless Eyes Fearless Heads", author:"Shakti Sharma", category:"Self-Help", desc:"A motivational guide to building emotional resilience and fearless leadership in turbulent times." },
+  { title:"The White Tiger", author:"Aravind Adiga", category:"Fiction", desc:"The Booker Prize-winning dark comedy about a driver from rural India who claws his way to entrepreneurial success through murder." },
+  { title:"The Seven Levels of Intimacy", author:"Matthew Kelly", category:"Self-Help", desc:"A journey through the levels of authentic communication and vulnerability that build truly meaningful relationships." },
+  // Shelf 2
+  { title:"Muhammad", author:"Karen Armstrong", category:"Biography", desc:"A sympathetic and scholarly biography of the Prophet of Islam, contextualizing his life in 7th-century Arabia for a contemporary audience." },
+  { title:"Small Wonder: The Making of the Nano", author:"Christabelle Noronha & Sujata Agrawal", category:"Innovation", desc:"The inside story of how Tata Motors created the world's most affordable car, a feat of engineering, frugal innovation, and Indian enterprise." },
+  { title:"Men Are from Mars, Women Are from Venus", author:"John Gray", category:"Self-Help", desc:"The bestselling guide to improving communication and relationships between men and women by understanding their fundamentally different needs." },
+  { title:"The Google Story", author:"David A. Vise", category:"Biography", desc:"A behind-the-scenes account of how Larry Page and Sergey Brin built the world's most powerful internet company from a Stanford dorm room." },
+  { title:"Hard Drive: Bill Gates and the Making of the Microsoft Empire", author:"Wallace & Erickson", category:"Biography", desc:"A detailed unauthorised biography of Bill Gates and the relentless, combative drive that built Microsoft into the world's most valuable software company." },
+  { title:"The Shack", author:"William P. Young", category:"Spirituality", desc:"A novel about a man's encounter with the Trinity after his daughter's murder — a controversial and moving exploration of grief, faith, and forgiveness." },
+  { title:"A Champion's Mind: Lessons from a Life in Tennis", author:"Pete Sampras", category:"Biography", desc:"The 14-time Grand Slam champion's memoir on the mental fortitude, preparation, and burning desire required to become the best in the world." },
+  { title:"The Innovator's Dilemma", author:"Clayton Christensen", category:"Innovation", desc:"The landmark argument that great companies fail not through incompetence but because they listen too carefully to customers — the theory of disruptive innovation." },
+  { title:"Built to Last", author:"Jim Collins & Jerry Porras", category:"Business Strategy", desc:"A study of visionary companies that have stood the test of time, revealing the habits and core ideologies that separate them from competitors." },
+  { title:"Mother Teresa: In My Own Words", author:"Mother Teresa", category:"Spirituality", desc:"Compiled thoughts, reflections, and sayings from the Nobel Peace Prize laureate, illuminating her philosophy of love, service, and compassion." },
+  { title:"The Little Book of String Theory", author:"Steven S. Gubser", category:"Science & Tech", desc:"A concise and clear introduction to string theory — explaining extra dimensions, branes, and the hope of a unified theory of everything." },
+  { title:"A Whole New Mind", author:"Daniel H. Pink", category:"Innovation", desc:"Pink argues that the future belongs to right-brain thinkers — designers, storytellers, empathizers — as the information age gives way to the Conceptual Age." },
+  { title:"The Cure", author:"Geeta Anand", category:"Biography", desc:"The extraordinary true story of a father who raised $100 million and challenged the medical establishment in a race to save his children from a fatal disease." },
+  // Shelf 2 right pile
+  { title:"The Back of the Napkin", author:"Dan Roam", category:"Innovation", desc:"How to solve problems and sell ideas using pictures — a guide to visual thinking that anyone can use regardless of drawing ability." },
+  { title:"Who Will Cry When You Die?", author:"Robin S. Sharma", category:"Self-Help", desc:"101 simple yet profound lessons for leading a richer, more fulfilling life with greater purpose, contribution, and joy." },
+  { title:"Asimov: The Best of Isaac Asimov", author:"Isaac Asimov", category:"Fiction", desc:"A curated anthology of the grandmaster's finest short science fiction, showcasing his unparalleled imagination and humanist vision." },
+  { title:"Money Journey", author:"Mehrab Irani", category:"Personal Finance", desc:"A practical guide to wealth creation and financial planning for the Indian investor, combining investment wisdom with personal finance principles." },
+  { title:"Animals Inc.", author:"Kenneth A. Tucker & Vandana Allman", category:"Business Strategy", desc:"A business parable for the 21st century using animal metaphors to illuminate the principles of great talent management and leadership." },
+  { title:"Think and Grow Rich", author:"Napoleon Hill", category:"Self-Help", desc:"Perhaps the most influential personal success book ever written — Hill's 13 steps to riches drawn from interviews with 500 successful people including Carnegie." },
+  { title:"Notes to Myself", author:"Hugh Prather", category:"Self-Help", desc:"A series of intimate, vulnerable journal entries exploring authenticity, relationships, and what it means to truly live — a quiet classic of self-reflection." },
+  { title:"The Greatest Secret in the World", author:"Og Mandino", category:"Self-Help", desc:"Mandino's guide to unlocking the secrets found in The Greatest Salesman in the World scrolls, with a ten-month action programme for transformation." },
+  { title:"An Autobiography: The Story of My Experiments with Truth", author:"M.K. Gandhi", category:"Biography", desc:"Gandhi's own account of his spiritual and political development — one of the most important autobiographies of the 20th century." },
+  // Shelf 3 (Image 3 unique titles)
+  { title:"How to Get from Where You Are to Where You Want to Be", author:"Jack Canfield", category:"Self-Help", desc:"The 25 principles of success from the co-creator of Chicken Soup for the Soul — a practical guide to setting and achieving any goal." },
+  { title:"What Is Life?", author:"Erwin Schrödinger", category:"Science & Tech", desc:"The landmark 1944 lectures by the Nobel physicist that inspired Watson and Crick, exploring life through the lens of quantum physics." },
+  { title:"Many Lives, Many Masters", author:"Dr. Brian Weiss", category:"Spirituality", desc:"A psychiatrist's true story of a young patient whose regression therapy revealed past lives — a paradigm-shifting account of reincarnation." },
+  { title:"The Stone Boy", author:"Thich Nhat Hanh", category:"Spirituality", desc:"A beautifully illustrated story that teaches children and adults about mindfulness, love, and healing through the wisdom of Zen tradition." },
+  { title:"Building Social Business", author:"Muhammad Yunus", category:"Innovation", desc:"Yunus, the father of microfinance, presents a new kind of capitalism that serves humanity's most pressing needs through social business models." },
+  { title:"Atoms in the Family", author:"Laura Fermi", category:"Biography", desc:"A memoir by Enrico Fermi's wife, combining a tender portrait of their family life with an insider's view of the Manhattan Project and the birth of the atomic age." },
+  { title:"Stones into Schools", author:"Greg Mortenson with Mike Bryan", category:"Biography", desc:"The sequel to Three Cups of Tea — Mortenson's mission to build schools in Pakistan and Afghanistan, focusing on remote Wakhan Corridor communities." },
+  { title:"A Better India, A Better World", author:"N.R. Narayana Murthy", category:"India", desc:"The Infosys founder's vision for India's growth, combining insights on entrepreneurship, governance, and the responsibilities of success." },
+  { title:"Getting to Plan B", author:"John Mullins & Randy Komisar", category:"Business Strategy", desc:"How successful entrepreneurs abandon their original Plan A and find breakthroughs by testing analogues, antilogs, and leaps of faith." },
+  { title:"Design-Driven Innovation", author:"Roberto Verganti", category:"Innovation", desc:"Argues that the deepest innovations are driven not by technology or users but by changes in meaning — what things are for and why." },
+  { title:"Talent Is Overrated", author:"Geoff Colvin", category:"Self-Help", desc:"What really separates world-class performers from others? Not talent, but deliberate practice — a challenging and evidence-based argument." },
+  { title:"Small Giants", author:"Bo Burlingham", category:"Business Strategy", desc:"The stories of companies that chose to be great rather than big — businesses that prioritise purpose, community, and quality over growth at any cost." },
+  { title:"The Case for God", author:"Karen Armstrong", category:"Spirituality", desc:"A sweeping historical argument that fundamentalism has given God a bad name, and that the great traditions offer a far richer, more subtle understanding of the divine." },
+  { title:"Talent Is Never Enough", author:"John C. Maxwell", category:"Self-Help", desc:"Maxwell's argument that talent alone guarantees nothing — the 13 key choices that take you beyond talent to a truly exceptional life." },
+  // Image 4 unique
+  { title:"Imagining India", author:"Nandan Nilekani", category:"India", desc:"A sweeping examination of the ideas that have shaped India's rise — and the reforms needed to sustain it — by the architect of Aadhaar." },
+  { title:"The One Thing You Need to Know", author:"Marcus Buckingham", category:"Leadership", desc:"Buckingham distils decades of management research into the single insight that unlocks great managing, great leading, and great career success." },
+  { title:"The Boy Who Harnessed the Wind", author:"William Kamkwamba", category:"Biography", desc:"The true story of a Malawian teenager who built a windmill from junkyard scraps to save his village from famine — a tale of ingenuity and determination." },
+  { title:"NurtureShock", author:"Po Bronson & Ashley Merryman", category:"Self-Help", desc:"New thinking about children — research-backed revelations that overturn conventional parenting wisdom on praise, sleep, race, and lying." },
+  { title:"Become Who You Were Born to Be", author:"Brian Souza", category:"Self-Help", desc:"Inspiring stories of ordinary people who discovered their unique gifts and found the courage to live their purpose, with Stephen Covey's endorsement." },
+  { title:"The Help", author:"Kathryn Stockett", category:"Fiction", desc:"The bestselling novel about African-American maids working in white Southern households in the early 1960s, told from three women's perspectives." },
+  { title:"Steve Jobs", author:"Walter Isaacson", category:"Biography", desc:"The definitive biography based on 40 interviews with Jobs himself and more than 100 family members, friends, and rivals — a portrait of creative genius." },
+  // Images 6 & 13
+  { title:"How to Read a Balance Sheet", author:"John A. Tracy", category:"Personal Finance", desc:"A clear, practical guide for non-accountants to understand financial statements and use them to make better business decisions." },
+  { title:"The Great Wing", author:"Louis A. Tartaglia", category:"Self-Help", desc:"An uplifting parable about discovering your purpose and achieving personal freedom through the metaphor of a young eagle learning to fly." },
+  { title:"The Christ Commission", author:"Og Mandino", category:"Spirituality", desc:"A time-travel novel in which a journalist goes back to first-century Jerusalem to investigate the Resurrection — Mandino's most ambitious work." },
+  { title:"Lee Iacocca's Talking Straight", author:"Lee Iacocca", category:"Biography", desc:"The former Chrysler CEO speaks his mind on American business, politics, and the qualities of leadership needed to compete in a global economy." },
+  { title:"Kipling: Just So Stories", author:"Rudyard Kipling", category:"Fiction", desc:"Kipling's delightful collection of origin tales — how the leopard got its spots, how the elephant got its trunk — beloved for their playful, rhythmic prose." },
+  { title:"Ignited Minds", author:"APJ Abdul Kalam", category:"India", desc:"Kalam's clarion call to India's youth, arguing that a combination of scientific vision and spiritual strength can transform India into a superpower." },
+  { title:"Five Point Someone", author:"Chetan Bhagat", category:"Fiction", desc:"The debut novel set in IIT Delhi that launched Chetan Bhagat's career — a comic, poignant tale of friendship, pressure, and growing up in India's elite engineering colleges." },
+  { title:"Retaining Top Employees", author:"(Various / Briefcase Books)", category:"Leadership", desc:"A concise, action-oriented guide to the strategies managers need to keep their highest performers engaged, motivated, and loyal." },
+  { title:"Why Employees Don't Do What They're Supposed to Do", author:"Ferdinand F. Fournies", category:"Leadership", desc:"Identifies the 16 reasons employees fail to perform and provides managers with specific strategies to fix each problem." },
+  { title:"Chickens Before They Hatch", author:"(Various)", category:"Business Strategy", desc:"A cautionary tale about premature optimism in business planning and the importance of grounding strategy in realistic assessment." },
+  { title:"A Good Hard Kick in the Ass", author:"Rob Adams", category:"Business Strategy", desc:"Basic training for entrepreneurs — straight talk from a veteran venture capitalist on what it really takes to build a successful startup." },
+  // Images 7 & 14
+  { title:"Fools Work Hard for Others (Losing My Virginity)", author:"Richard Branson", category:"Biography", desc:"Richard Branson's irreverent memoir charting the wild adventures behind building the Virgin empire — a study in rule-breaking entrepreneurship." },
+  { title:"Real Time", author:"Regis McKenna", category:"Business Strategy", desc:"McKenna's prescient argument that in the always-on economy, companies must respond to customer demands in real time or risk obsolescence." },
+  { title:"The Pilgrimage", author:"Paulo Coelho", category:"Spirituality", desc:"Coelho's autobiographical account of walking the Road to Santiago de Compostela, encountering lessons about love, courage, and spiritual awakening." },
+  { title:"One Minute Manager Balances Work and Life", author:"Ken Blanchard, D.W. Edington & Marjorie Blanchard", category:"Self-Help", desc:"The One Minute Manager framework applied to the challenge of achieving balance across work, health, and personal life." },
+  { title:"The One to One Future", author:"Don Peppers & Martha Rogers", category:"Business Strategy", desc:"The landmark book that coined 'one-to-one marketing' — how to build customer relationships in the interactive age through personalisation." },
+  { title:"Complete Works of Swami Vivekananda", author:"Swami Vivekananda", category:"Spirituality", desc:"The comprehensive collected works of the great Vedanta philosopher — speeches, letters, poems, and prose that introduced Indian philosophy to the West." },
+  { title:"A Shot at History: My Obsessive Journey to Olympic Gold", author:"Abhinav Bindra with Rohit Brijnath", category:"Biography", desc:"India's first individual Olympic gold medallist tells his story of obsessive preparation, solitude, and the single perfect moment at Beijing 2008." },
+  { title:"The Alchemy of Enlightenment", author:"Osho (Advaita Ashrama)", category:"Spirituality", desc:"Osho's discourses on the nature of consciousness, meditation, and the inner revolution required to move from sleep to true awakening." },
+  { title:"Aleph", author:"Paulo Coelho", category:"Fiction", desc:"Coelho's autobiographical novel about a spiritual journey across Russia by Trans-Siberian railway in search of renewal and past-life memories." },
+  { title:"Real Magic", author:"Dr. Wayne W. Dyer", category:"Self-Help", desc:"Dyer's guide to creating miracles in everyday life by shifting from ego-driven to spirit-driven thinking — a core text of the positive psychology movement." },
+  // Image 8
+  { title:"Drucker: The New Realities", author:"Peter F. Drucker", category:"Business Strategy", desc:"Drucker surveys the political, economic, and social realities reshaping government, business, and society in the post-war era." },
+  { title:"The Mind of the Strategist", author:"Kenichi Ohmae", category:"Business Strategy", desc:"The legendary McKinsey consultant reveals the creative, intuitive thought processes of Japan's greatest corporate strategists." },
+  { title:"Learn to Live", author:"Norman Lewis", category:"Self-Help", desc:"A practical guide to building a richer, more fulfilling life through better communication, relationships, and self-awareness." },
+  { title:"Problems in General Physics (Vol. 2)", author:"I.E. Irodov", category:"Science & Tech", desc:"The classic Soviet problem book that has tested physics students worldwide — comprehensive, demanding, and immensely rewarding for serious learners." },
+  { title:"Manifest Your Destiny", author:"Dr. Wayne W. Dyer", category:"Self-Help", desc:"Nine spiritual principles for getting everything you want, drawing on meditation, intention, and Dyer's synthesis of Eastern and Western spiritual traditions." },
+  { title:"Sweet and Sour Soup for the Executive", author:"(Various)", category:"Leadership", desc:"A collection of anecdotes, lessons, and motivational pieces drawn from the experience of top executives, blending inspiration with practical business wisdom." },
+  { title:"The Disney Way", author:"Bill Capodagli & Lynn Jackson", category:"Business Strategy", desc:"How Disney's creative vision, storytelling, and customer-first culture can be applied to any business — lessons from the world's most magical company." },
+  { title:"Are You Ready to Succeed?", author:"Srikumar Rao", category:"Self-Help", desc:"Based on Rao's wildly popular Columbia Business School course, this book uses Eastern wisdom to help readers find purpose, reduce stress, and create success." },
+  { title:"High Impact Public Speaking", author:"(Various)", category:"Self-Help", desc:"A practical workbook for building powerful presentation skills, covering structure, delivery, and managing nerves for professional speakers." },
+  { title:"Simpleology", author:"Mark Joyner", category:"Self-Help", desc:"The simple science of getting what you want — Joyner's system for cutting through mental clutter and focusing attention on what truly matters." },
+  // Image 9
+  { title:"God is My CEO", author:"Larry S. Julian", category:"Spirituality", desc:"A guide for business leaders on how to reconcile the demands of the bottom line with faith-based values through real stories of 21st-century leaders." },
+  { title:"The Myth of Tomorrow", author:"Nicholas Boothman", category:"Self-Help", desc:"A guide to stop procrastinating and start living, arguing that the future is created by the choices we make in the present moment." },
+  { title:"Conversations with God", author:"Neale Donald Walsch", category:"Spirituality", desc:"An unexpected dialogue with God — Walsch's provocative and comforting account of the answers he received to his most painful questions about life." },
+  { title:"De Bono Tactics", author:"Edward de Bono", category:"Innovation", desc:"A guide to tactical thinking in business — how to use lateral thinking tools to outsmart competitors and find creative solutions to everyday challenges." },
+  { title:"The Power of Now", author:"Eckhart Tolle", category:"Spirituality", desc:"A guide to spiritual enlightenment — Tolle's revolutionary argument that the source of suffering is identification with the mind, and that presence is the key to liberation." },
+  { title:"The Only Sustainable Edge", author:"John Hagel III & John Seely Brown", category:"Business Strategy", desc:"Argues that competitive advantage in the 21st century comes not from owning resources but from accelerating capability-building through dynamic specialisation." },
+  { title:"Cows Don't Give Milk", author:"Promod Batra", category:"Self-Help", desc:"A collection of motivational stories and insights from prolific Indian author Promod Batra, emphasizing effort, attitude, and personal responsibility." },
+  { title:"Call Center Success", author:"(Various)", category:"Business Strategy", desc:"A practical guide to building and managing high-performance call centre teams, covering hiring, training, metrics, and culture." },
+  { title:"Emotional Intelligence at Work", author:"Hendrie Weisinger", category:"Leadership", desc:"How to apply Daniel Goleman's EQ framework in professional settings — practical techniques for improving self-awareness, empathy, and relationship management at work." },
+  { title:"Positioning: The Battle for Your Mind", author:"Al Ries & Jack Trout", category:"Business Strategy", desc:"The marketing classic that introduced the concept of positioning — how to be seen and remembered in an overcommunicated marketplace." },
+  // Image 10
+  { title:"Focus: The Future of Your Company Depends on It", author:"Al Ries", category:"Business Strategy", desc:"Ries argues that the most powerful concept in business is focus — and that diversification is the path to mediocrity and eventual failure." },
+  { title:"Living the 7 Habits", author:"Stephen R. Covey", category:"Self-Help", desc:"Stories of courage and inspiration from people who have applied The 7 Habits of Highly Effective People to transform their lives, families, and organisations." },
+  { title:"Execution: The Discipline of Getting Things Done", author:"Larry Bossidy & Ram Charan", category:"Business Strategy", desc:"The missing link between aspirations and results — how to build the three core processes of execution: people, strategy, and operations." },
+  { title:"The New Conceptual Selling", author:"Stephen E. Heiman & Diane Sanchez", category:"Business Strategy", desc:"An update of the classic selling framework that focuses on understanding the customer's concept before presenting a solution." },
+  { title:"Jack: Straight from the Gut", author:"Jack Welch with John A. Byrne", category:"Biography", desc:"The former GE chairman's autobiography — his management philosophy, the 'Neutron Jack' controversies, and the making of one of history's most celebrated CEOs." },
+  { title:"The New Strategic Selling", author:"Robert B. Miller & Stephen E. Heiman", category:"Business Strategy", desc:"The updated classic on managing complex sales, covering the political landscape, buyer types, and strategy needed to win large accounts." },
+  // Image 11
+  { title:"Ako Morita and Sony", author:"Akio Morita", category:"Biography", desc:"The Sony co-founder's memoir and business philosophy — the story of Japan's most innovative company and the global brand behind the Walkman and PlayStation." },
+  { title:"First Things First", author:"Stephen R. Covey", category:"Self-Help", desc:"Covey's companion to The 7 Habits — a time management philosophy centred on importance rather than urgency, and on living by values rather than schedules." },
+  { title:"Tough Times Never Last, But Tough People Do", author:"Robert H. Schuller", category:"Self-Help", desc:"An inspiring guide to maintaining faith and positive thinking through adversity, drawing on Schuller's philosophy of possibility thinking." },
+  { title:"The Myth of Market Share", author:"Richard Miniter", category:"Business Strategy", desc:"A provocative argument that the obsessive pursuit of market share destroys shareholder value, with evidence from dozens of corporate case studies." },
+  { title:"The Alchemist", author:"Paulo Coelho", category:"Fiction", desc:"The beloved allegorical novel about a young Andalusian shepherd's journey to Egypt in search of treasure — a meditation on following one's Personal Legend." },
+  { title:"Control Your Destiny or Someone Else Will", author:"Noel Tichy & Stratford Sherman", category:"Leadership", desc:"How Jack Welch transformed GE into the world's most competitive corporation — and the leadership lessons from that transformation." },
+  { title:"Necessary But Not Sufficient", author:"Eliyahu M. Goldratt", category:"Business Strategy", desc:"A business novel in which ERP system implementers learn that technology alone cannot transform a company — the Theory of Constraints perspective on IT." },
+  { title:"Knock Your Socks Off Selling", author:"Jeffrey Gitomer", category:"Business Strategy", desc:"A lively guide to sales excellence combining humour, real-world tactics, and a philosophy of giving value before expecting anything in return." },
+  // Image 12
+  { title:"Jump and the Net Will Appear", author:"Robin H. Crow", category:"Self-Help", desc:"An inspiring memoir-meets-business guide arguing that extraordinary lives require extraordinary leaps of faith — and that the universe rewards courage." },
+  { title:"Challenge of the Mind", author:"Ryuho Okawa", category:"Spirituality", desc:"A guide to developing mental discipline, spiritual awareness, and the power of positive thinking from the founder of Happy Science." },
+  { title:"Lama Surya Das: Awakening the Buddha Within", author:"Lama Surya Das", category:"Spirituality", desc:"An accessible introduction to Tibetan Buddhist wisdom by America's leading Western lama — eight steps to enlightenment drawn from the Tibetan tradition." },
+  { title:"Pepsi to Apple: A Journey of Adventure, Ideas, and the Future", author:"John Sculley with John A. Byrne", category:"Biography", desc:"The Apple CEO who succeeded Steve Jobs reflects on leadership, innovation, and the corporate battles of Silicon Valley's formative era." },
+  { title:"Can I Want to Do Everything? (I Could Do Anything If I Only Knew What It Was)", author:"Barbara Sher", category:"Self-Help", desc:"Sher's guide for people with multiple passions who can't choose — how scanners and generalists can use their wide-ranging interests to build a fulfilling life." },
+  { title:"How to Get What You Want Out of Life", author:"William J. Reilly", category:"Self-Help", desc:"A classic guide to setting clear life goals and systematically working toward them, emphasising the power of desire and disciplined action." },
+  { title:"One Up on Wall Street", author:"Peter Lynch with John Rothchild", category:"Personal Finance", desc:"Lynch's famous advice for individual investors — how to use what you already know to outperform the professionals by investing in familiar businesses." },
+  { title:"Prophecy (Rich Dad's)", author:"Robert T. Kiyosaki", category:"Personal Finance", desc:"Kiyosaki's warning about an imminent stock market crash and how the baby boomer retirement wave will reshape personal finance — and what to do about it." },
+  // Image 15
+  { title:"Executive Handbook of Modern Marketing", author:"B. Nahayan", category:"Business Strategy", desc:"A comprehensive reference for marketing executives covering strategy, brand management, and the tools of modern marketing practice." },
+  { title:"The Secret", author:"Rhonda Byrne", category:"Self-Help", desc:"The global phenomenon exploring the law of attraction — the idea that positive or negative thoughts bring positive or negative experiences into a person's life." },
+  { title:"Say It Right the First Time", author:"Loretta Malandro", category:"Leadership", desc:"How leaders can eliminate the costly miscommunications that derail strategy, using precise language that creates clarity and accountability." },
+  { title:"A 2nd Helping of Chicken Soup for the Soul", author:"Jack Canfield & Mark Victor Hansen", category:"Self-Help", desc:"The second volume of the legendary series — 101 more stories of hope, love, and inspiration to warm the heart and lift the spirit." },
+  { title:"In Search of Excellence", author:"Thomas J. Peters & Robert H. Waterman Jr.", category:"Business Strategy", desc:"The 1982 management classic that identified eight attributes of America's best-run companies — still one of the best-selling business books of all time." },
+  { title:"Invincible Thinking", author:"Ryuho Okawa", category:"Spirituality", desc:"A guide to building an undefeatable mindset through the power of positive thinking and spiritual discipline, drawing on Japanese philosophical traditions." },
+  { title:"Just Enough", author:"Laura Nash & Howard Stevenson", category:"Self-Help", desc:"Tools for creating success in your work and life — a research-based framework for achieving balance across four areas: happiness, achievement, significance, and legacy." },
+  { title:"Synchrodestiny", author:"Deepak Chopra", category:"Spirituality", desc:"Chopra's guide to harnessing the infinite power of coincidence to create a life of deeper meaning and greater fulfilment." },
+  { title:"Dig Your Well Before You're Thirsty", author:"Harvey Mackay", category:"Business Strategy", desc:"The only networking book you'll ever need — Mackay's timeless guide to building and maintaining relationships before you need them." },
+  // Image 16
+  { title:"Over the Top", author:"Zig Ziglar", category:"Self-Help", desc:"Ziglar's blueprint for moving from the mediocre to the magnificent — a comprehensive guide to achieving balanced success in every area of life." },
+  { title:"The E-Myth Revisited", author:"Michael E. Gerber", category:"Business Strategy", desc:"Why most small businesses don't work and what to do about it — Gerber's classic distinction between working on your business versus working in it." },
+  { title:"The Servant: A Simple Story About the True Essence of Leadership", author:"James C. Hunter", category:"Leadership", desc:"A business parable set in a monastery that argues authentic leadership is built on service, sacrifice, and genuine care for people." },
+  { title:"StrengthsFinder 2.0", author:"Tom Rath", category:"Leadership", desc:"Based on decades of Gallup research, this updated edition helps readers discover and apply their unique strengths — the alternative to fixing weaknesses." },
+  { title:"Feeling Good: The New Mood Therapy", author:"David D. Burns, M.D.", category:"Self-Help", desc:"The clinically proven, drug-free treatment for depression — Burns's cognitive therapy workbook that has helped millions overcome low moods and self-defeating thinking." },
+  { title:"Remember Who You Are", author:"(Various / HBS Press)", category:"Leadership", desc:"Life stories that inspire and guide, drawn from the experiences of Harvard Business School alumni navigating integrity, purpose, and leadership under pressure." },
+  { title:"Thick Face, Black Heart", author:"Chin-Ning Chu", category:"Self-Help", desc:"The ancient Asian art of winning — the philosophy of invulnerability and inner confidence that allows people to act decisively without guilt or self-doubt." },
+  { title:"Visions: How Science Will Revolutionize the 21st Century", author:"Michio Kaku", category:"Science & Tech", desc:"Kaku's sweeping forecast of the scientific breakthroughs — in computers, medicine, and quantum physics — that will reshape life and civilisation by 2100." },
+  { title:"The Highest Goal", author:"Michael Ray", category:"Spirituality", desc:"Based on the most popular course ever taught at Stanford Business School — how aligning work with your highest purpose unlocks creativity and inner freedom." },
+  { title:"Survival Is Not Enough", author:"Seth Godin", category:"Business Strategy", desc:"Godin's argument that the only sustainable competitive advantage is the ability to change faster than the competition — a guide to making zooming a habit." },
+  // Image 17
+  { title:"A Bend in the River", author:"V.S. Naipaul", category:"Fiction", desc:"The Nobel laureate's dark, penetrating novel about an Indian trader living in a newly independent African country — a meditation on history, power, and belonging." },
+  { title:"Pitch Yourself", author:"Pradeep Nevatia", category:"Self-Help", desc:"A practical guide for Indian professionals on personal branding, career positioning, and making a powerful impression in a competitive job market." },
+  { title:"Brandwise", author:"Jyothi Menon", category:"Business Strategy", desc:"An Indian perspective on building powerful brands through a mix of global best practices and locally relevant marketing strategies." },
+  { title:"Five Buckets", author:"Ken Blanchard & Sheldon Bowles", category:"Leadership", desc:"A story about discovering the five areas of life that, when balanced, create lasting personal and professional fulfilment." },
+  { title:"The Leadership Solution", author:"Jim Shaffer", category:"Leadership", desc:"How to embed leadership capability throughout an organisation so that strategy gets executed and real performance improvement follows." },
+  { title:"Against the Gods: The Remarkable Story of Risk", author:"Peter L. Bernstein", category:"Personal Finance", desc:"A sweeping intellectual history of risk — from ancient dice games to modern financial derivatives — and how humanity's mastery of probability changed the world." },
+  { title:"The Myth of Excellence", author:"Fred Crawford & Ryan Mathews", category:"Business Strategy", desc:"Why great companies never try to be the best at everything — the five consumer values and how to dominate in one while performing well in the others." },
+  { title:"Mister God, This Is Anna", author:"Fynn", category:"Spirituality", desc:"The beloved story of Anna, a remarkable five-year-old girl who died young but whose insights about God, love, and the universe left a permanent mark on the author." },
+  { title:"The World's Greatest Comebacks", author:"Robert Schuller", category:"Self-Help", desc:"Inspiring stories of people who turned failure, defeat, and tragedy into springboards for extraordinary achievement." },
+  { title:"Hot Groups", author:"Jean Lipman-Blumen & Harold J. Leavitt", category:"Leadership", desc:"An exploration of the psychology and culture of small, intensely task-focused teams that consistently achieve breakthrough results." },
+  { title:"The Four Agreements", author:"Don Miguel Ruiz", category:"Spirituality", desc:"A Toltec wisdom book proposing four personal agreements — be impeccable with your word, don't take anything personally, don't make assumptions, always do your best." },
+  { title:"Evolution Not Revolution", author:"Dave Logan & John King", category:"Business Strategy", desc:"A guide to the gradual, sustainable transformation of organisations through culture change, leadership development, and tribal dynamics." },
+  // Image 18
+  { title:"Freedom at Midnight", author:"Dominique Lapierre & Larry Collins", category:"India", desc:"The dramatic account of the final year of British rule in India — the negotiations, violence, and partition that accompanied independence in August 1947." },
+  { title:"Unlimited Power", author:"Anthony Robbins", category:"Self-Help", desc:"Robbins's early masterwork introducing neuro-linguistic programming to a mass audience — a blueprint for achieving physical, financial, and emotional excellence." },
+  { title:"What Should I Do with My Life?", author:"Po Bronson", category:"Self-Help", desc:"True stories of people who found the courage to answer this question — an honest and moving exploration of purpose, career change, and meaning." },
+  { title:"Create a Life That Tickles Your Soul", author:"Suzanne Willis Zoglio", category:"Self-Help", desc:"A gentle, practical guide to designing a life of greater joy, authenticity, and alignment between who you are and how you live." },
+  { title:"Discover the Power Within You", author:"Eric Butterworth", category:"Spirituality", desc:"A Unity minister's guide to unlocking the divinity within — drawing on the teachings of Jesus to reveal the unlimited potential that lies in every person." },
+  { title:"The Road Less Travelled", author:"M. Scott Peck", category:"Self-Help", desc:"A profound exploration of the nature of love and spiritual growth — beginning with the startling statement that life is difficult, and showing how to grow through that difficulty." },
+  { title:"My Friend Leonard", author:"James Frey", category:"Fiction", desc:"Frey's memoir-novel sequel to A Million Little Pieces — a story of friendship, loyalty, and finding family in the most unexpected places." },
+  { title:"Every Street Is Paved with Gold", author:"Kim Woo-Choong", category:"Biography", desc:"The Daewoo founder's story of how hard work, persistence, and ambition can overcome any obstacle — a guide to the Korean success ethos." },
+  { title:"The Return of the Ragpicker", author:"Og Mandino", category:"Self-Help", desc:"A sequel to The Greatest Miracle in the World — an uplifting novel about rediscovering one's worth and the mission each person is given to fulfil." },
 ];
 
-// Load statuses from storage or defaults
+// Load statuses
 function loadStatuses() {
-  const stored = localStorage.getItem('bookStatuses');
-  if (stored) {
-    const map = JSON.parse(stored);
-    BOOKS.forEach((b, i) => { if (map[i]) b.status = map[i]; });
-  }
+  try {
+    const stored = localStorage.getItem('bookStatuses2');
+    if (stored) {
+      const map = JSON.parse(stored);
+      BOOKS.forEach((b, i) => { if (map[i]) b.status = map[i]; });
+    }
+  } catch(e) {}
+  BOOKS.forEach(b => { if (!b.status) b.status = 'Available'; });
+}
+function saveStatuses() {
+  try {
+    const map = {};
+    BOOKS.forEach((b, i) => { map[i] = b.status; });
+    localStorage.setItem('bookStatuses2', JSON.stringify(map));
+  } catch(e) {}
 }
 
-function saveStatuses() {
-  const map = {};
-  BOOKS.forEach((b, i) => { map[i] = b.status; });
-  localStorage.setItem('bookStatuses', JSON.stringify(map));
-}
+const CATEGORY_COLORS = {
+  'Leadership':'#2980b9','Business Strategy':'#16a085','Innovation':'#8e44ad',
+  'Personal Finance':'#d35400','Biography':'#c0392b','Self-Help':'#e67e22',
+  'Spirituality':'#6c3483','Science & Tech':'#27ae60','Fiction':'#2c3e50',
+  'India':'#f39c12','Other':'#7f8c8d'
+};
 
 let activeFilter = 'All';
 let activeIndex = null;
 
-function spineColor(category) {
-  return CATEGORY_COLORS[category] || '#7f8c8d';
-}
-
-function statusClass(status) {
-  if (status === 'Reading') return 'status-reading';
-  if (status === 'Lent Out') return 'status-lent';
+function spineColor(cat) { return CATEGORY_COLORS[cat] || '#7f8c8d'; }
+function statusClass(s) {
+  if (s === 'Reading') return 'status-reading';
+  if (s === 'Lent Out') return 'status-lent';
   return 'status-available';
 }
 
@@ -545,46 +439,40 @@ function renderGrid() {
   const grid = document.getElementById('bookGrid');
   const query = document.getElementById('searchInput').value.toLowerCase();
   let visible = 0;
-
   grid.innerHTML = '';
   BOOKS.forEach((book, i) => {
     const matchSearch = book.title.toLowerCase().includes(query) || book.author.toLowerCase().includes(query);
     const matchFilter = activeFilter === 'All' || book.category === activeFilter;
     if (!matchSearch || !matchFilter) return;
-
     visible++;
     const card = document.createElement('div');
     card.className = 'card';
+    const shortDesc = book.desc.length > 95 ? book.desc.slice(0, 95) + '…' : book.desc;
     card.innerHTML = `
       <div class="card-spine" style="background:${spineColor(book.category)}"></div>
       <div class="card-body">
         <div class="card-category">${book.category}</div>
         <div class="card-title">${book.title}</div>
         <div class="card-author">${book.author}</div>
-        <div class="card-desc">${book.desc.length > 100 ? book.desc.slice(0, 100) + '…' : book.desc}</div>
+        <div class="card-desc">${shortDesc}</div>
       </div>
       <div class="card-footer">
         <span class="status-badge ${statusClass(book.status)}">${book.status}</span>
-      </div>
-    `;
+      </div>`;
     card.addEventListener('click', () => openModal(i));
     grid.appendChild(card);
   });
-
   if (visible === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'empty';
-    empty.style.display = 'block';
-    empty.innerHTML = '<p>No books match your search.</p>';
-    grid.appendChild(empty);
+    const e = document.createElement('div');
+    e.style.cssText = 'text-align:center;padding:80px 20px;grid-column:1/-1;color:#7a7068;font-size:15px;';
+    e.textContent = 'No books match your search.';
+    grid.appendChild(e);
   }
-
   document.getElementById('visibleCount').textContent = visible;
   document.getElementById('totalCount').textContent = BOOKS.length;
 }
 
 function filterBooks() { renderGrid(); }
-
 function setFilter(cat, btn) {
   activeFilter = cat;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -599,23 +487,13 @@ function openModal(i) {
   document.getElementById('mTitle').textContent = b.title;
   document.getElementById('mAuthor').textContent = 'by ' + b.author;
   document.getElementById('mDesc').textContent = b.desc;
-
   const sel = document.getElementById('mStatus');
   sel.innerHTML = ['Available','Reading','Lent Out'].map(s =>
-    `<option value="${s}" ${b.status===s?'selected':''}>${s}</option>`
-  ).join('');
-
+    `<option value="${s}"${b.status===s?' selected':''}>${s}</option>`).join('');
   document.getElementById('modalOverlay').classList.add('open');
 }
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
-}
-function closeModalDirect() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  activeIndex = null;
-}
-
+function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); activeIndex = null; }
 function updateStatus() {
   if (activeIndex === null) return;
   BOOKS[activeIndex].status = document.getElementById('mStatus').value;
